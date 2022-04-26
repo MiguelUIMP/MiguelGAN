@@ -12,22 +12,20 @@ class DenseNNgenerator(torch.nn.Module):
         super().__init__()
         self.main_module = nn.Sequential(
             
-            nn.Linear((channels+random_noise), 200),
-           # nn.BatchNorm1d(num_features=60),
+            nn.Linear((channels+random_noise), 100),
+            nn.BatchNorm1d(num_features=100),
             nn.ReLU(True),
             
-            nn.Linear( 200, 300),
-           # nn.BatchNorm1d(num_features=40),
+            nn.Linear( 100, 200),
+            nn.BatchNorm1d(num_features=200),
             nn.ReLU(True),
             
-            nn.Linear(300, 200),
-            nn.ReLU(True),
-          
             nn.Linear(200, 100),
+            nn.BatchNorm1d(num_features=200),
             nn.ReLU(True),
           
-            nn.Linear( 100, channels),
-            nn.ReLU(True)
+            nn.Linear(100, channels),
+            
         )
 
     def forward(self, x):
@@ -39,23 +37,19 @@ class DenseNNdiscriminator(torch.nn.Module):
         super().__init__()
         self.main_module = nn.Sequential(
             
-            nn.Linear( channels, 200),
-           # nn.BatchNorm1d(num_features=40),
+            nn.Linear( channels, 100),
+           # nn.BatchNorm1d(num_features=100),
             nn.ReLU(True),
               
-            nn.Linear(200, 300),
+            nn.Linear(100, 200),
             nn.ReLU(True),
           
-            nn.Linear(300, 100),
+            nn.Linear(200, 100),
             nn.ReLU(True),  
-          
-            nn.Linear(100,50),
-           # nn.BatchNorm1d(num_features=20),
-            nn.ReLU(True),
             
-            nn.Linear(50,1)
+            nn.Linear(100,1)
         )
-        self.output = nn.Sigmoid()
+        self.output = nn.Tanh()
 
     def forward(self, x):
         x = self.main_module(x)
@@ -68,8 +62,8 @@ class ttbarGAN():
 
 
     def __init__(self, lat_space):
-        channels = 1 # canales de salida de los datos, cuantas variables obtener
-        random_noise = 10 # canales de ruido aleatorio que meter
+        channels = 3 # canales de salida de los datos, cuantas variables obtener
+        random_noise = 15 # canales de ruido aleatorio que meter
         self.G=DenseNNgenerator(channels=channels, random_noise=random_noise)
         self.D=DenseNNdiscriminator(channels=channels)
         '''
