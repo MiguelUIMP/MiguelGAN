@@ -270,7 +270,7 @@ class WGAN_trainer:
         plot3=ax.plot( range(len(values_d_loss_real_data)),values_d_loss_real_data , label='loss critic real data')
         plot2=ax.plot( range(len(values_d_loss_fake_data)),values_d_loss_fake_data , label='loss critic fake data')
         plot1=ax.plot( range(len(values_g_loss_data     )),values_g_loss_data      , label='loss generator')
-        plt.legend(handles=[plot1[0],plot2[0],plot3[0]])
+        plt.legend(handles=[plot3[0],plot2[0],plot1[0]])
         plt.savefig(f'./TrainedGANs/LossFunction_{model_lab}.png')
         ax.clear()
         plt.close()
@@ -329,14 +329,6 @@ class WGAN_trainer:
         self.G.load_state_dict(torch.load(f'./TrainedGANs/{self._options.trainingLabel}_generator_{label}.pkl',map_location=torch.device('cpu')))
         self.D.load_state_dict(torch.load(f'./TrainedGANs/{self._options.trainingLabel}_discriminator_{label}.pkl',map_location=torch.device('cpu'))) 
 
-
-
-    '''
-    Para generar muestras del proceso TODO:
-        En el momento de generar el espacio latente ¿le metemos todo numeros random
-        o tendremos que meterle algun suceso realista ya que le hemos entrenado con
-        un espacio latente con estructura?
-    '''
     
     def generate_samples(self, number_of_samples, save_as, num_model, label="FINAL" ):
         if num_model is None:
@@ -359,9 +351,6 @@ class WGAN_trainer:
         samples_tensor = torch.squeeze(torch.stack(samples))
         
         self.save_samples(samples_tensor, label, toPytorch=(save_as=='pt' or save_as=='all'), toRoot=(save_as=='root' or save_as=='all'))
-        
-        self.compare_samples(samples_tensor, label)
-        #self.postProcessSamples( samples, label )  
         
     
     def save_samples(self, samples_tensor, label, toPytorch=True, toRoot=True):
@@ -391,46 +380,97 @@ class WGAN_trainer:
                 f['t'] = df
             print("Samples successfully saved in:", os.path.join(path, f'./GeneratedSamplesTTbar/samples_{label}.root'))
                 
-    def compare_samples(self, samples_tensor, label):
+                
+                
+    def plot_samples(self, plot_options, num_model, label="FINAL", process=False):
         
-        #samples_df = self.postProcess(samples_tensor)
-        samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
-
-        if "MC_data" in self.plot_opt:
-            compare_df = read_root_files([self.latent_path], compare=True)
-            type_data = "original data"
-        else:
-            compare_df = read_root_files([self.compare_path], compare=True)
-            type_data = "biased data"
+        # load last model if not model number is passed
+        if num_model is None:
+            num_docs = len(os.listdir("./TrainedGANs"))
+            label = '_'.join((label, str(int(num_docs/3)-1)))
+        else :
+            label = '_'.join((label, str(num_model)))
             
-
-        compare_mean = round(compare_df.mean(),2)
-        compare_std = round(compare_df.std(),2)
+        if not os.path.exists(f'./GeneratedSamplesTTbar/samples_{label}.pt') and num_model is not None:
+            raise RuntimeError('Introduce a valid samples model number, current value does not exist.')
+        if not os.path.exists(f'./GeneratedSamplesTTbar/samples_{label}.pt') and num_model is None:
+            raise RuntimeError('Last model saved has not samples generated, generate samples before to plot them.')
+            
+        # samples tensor load to cpu, it could be load in the gpu    
+        samples_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}.pt', map_location=torch.device('cpu'))
+        
+        # if samples need postProcess to change from cartesian to spherical basis or are already load in spherical ones
+        if process:
+            samples_df = self.postProcess(samples_tensor)
+        if not process:
+            samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
+            
         samples_mean = round(samples_df.mean(),2)
         samples_std = round(samples_df.std(),2)
         
+        data_type=[]
+        plot_type=[]
+        scale_type=[]
         
-        for var in samples_df:
+        if "original_data" in plot_options:
+            data_type.append("original data")
+        if "bias_data" in plot_options:
+            data_type.append("biased data")
+        if "density" in plot_options:
+            plot_type.append(True)
+        if "counts" in plot_options:
+            plot_type.append(False)
+        if "log" in plot_options:
+            scale_type.append("log")
+        if "linear" in plot_options:
+            scale_type.append("linear")
             
-            plt.figure(figsize=(11,8));
-            density=False
-            if "density" in self.plot_opt:
-                density=True
-            hist_range = (compare_df.min()[var], compare_df.max()[var])
-            plt.hist(compare_df[var] , range=hist_range, bins=200, density=density, alpha=0.5, label=f'MC simulation {type_data}; mean: {compare_mean[var]} std: {compare_std[var]}');
-            if "MC_data" in self.plot_opt:
-                hist_range = (samples_df.min()[var], samples_df.max()[var])
-            plt.hist(samples_df[var], range=hist_range, bins=200, density=density, alpha=0.5, label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}');
-            plt.xlabel("ptlep1")
-            if "density" in self.plot_opt:
-                plt.ylabel("Density")
-            else:
-                plt.ylabel("Counts")
-            if "log_scale" in self.plot_opt:
-                plt.yscale("log")
-            plt.title(f'{var} for generated and simulated MC samples')
-            plt.legend(loc='upper right')
-            plt.savefig(f'./GeneratedSamplesTTbar/comparation_{var}_{label}.png')
+        for data_t in data_type:
+            if data_t == "original_data":
+                compare_df = read_root_files([self.latent_path], compare=True)
+            if data_t == "bias_data":
+                compare_df = read_root_files([self.compare_path], compare=True)
+                
+            compare_mean = round(compare_df.mean(),2)
+            compare_std = round(compare_df.std(),2)
+
+            for plot_t in plot_type:
+                for scale_t in scale_type:
+         
+                    for var in samples_df:
+
+                        plt.figure(figsize=(11,8));
+                        hist_range_com = (compare_df.min()[var], compare_df.max()[var])
+                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=plot_t, alpha=0.5, label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}');
+                        hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
+                        plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=plot_t, alpha=0.5, label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}');
+                        if hist_range_sam[0]<hist_range_com[0]
+                            font = {'family': 'serif',
+                                    'color':  'darkred',
+                                    'weight': 'normal',
+                                    'size': 12,
+                                    }
+                            out_b=round(hist_range_sam[0], 2)
+                            plt.text(0.55, 0.75, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
+                        if hist_range_sam[1]>hist_range_com[1]
+                            font = {'family': 'serif',
+                                    'color':  'darkred',
+                                    'weight': 'normal',
+                                    'size': 16,
+                                    }
+                            out_b=round(hist_range_sam[1], 2)
+                            plt.text(0.55, 0.75, f'sample out of upper bound up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
+                        plt.xlabel("ptlep1")
+                        
+                        if plot_t:
+                            plt.ylabel("Density")
+                        if not plot_t:
+                            plt.ylabel("Counts")
+                        plt.yscale(scale_t)
+                        plt.title(f'{var} for generated and simulated MC samples')
+                        plt.legend(loc='upper right')
+                        plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}.png')
+                        plt.close()
         
     def postProcess(self, samples_tensor):
         
@@ -465,7 +505,7 @@ if __name__=="__main__":
     parser.add_option("--n_samples",           dest="n_samples",  type="int", default=12, help="Number of samples to be generated");
     parser.add_option("--save_samples",           dest="save_samples",  type="string", default="all", help="How to save the samples generated: in .pt (use pt), in .root (use root), both (use all), or do not save (use none)");
     parser.add_option("--latent_space",           dest="latent_space",  type="string", default="gaussian", help="use uniform to sample from uniform dist in latent space or gaussian to follow suit from gaussian dist");
-    parser.add_option("--num_model",           dest="num_model",  type="int", default=None, help="use uniform to sample from uniform dist in latent space or gaussian to follow suit from gaussian dist");
+    parser.add_option("--num_model",           dest="num_model",  type="int", default=None, help="model number from which load the data to generate sampels or plot samples");
     parser.add_option("--constraint",           dest="constraint",  type="string", default="clipping", help="Lipschitz constraint, use clipping weights or gradient penalty");
     parser.add_option("--penalty_coeff",           dest="penalty_coeff",  type="float", default=10.0, help="Gradient penalty coefficient");
     parser.add_option("--plot_opt",           dest="plot_opt", action='append', type="string", default=[], help="plot histogram with log_scale or normal_scale, counts or density, bias_data or MC_data");
@@ -482,6 +522,11 @@ if __name__=="__main__":
         
     if 'generate' in options.do_what:
         model.generate_samples(options.n_samples, options.save_samples, options.num_model)
+      
+    if 'plot' in options.do_what:
+        model.plot_samples(options.plot_opt, options.num_model)
+        
+    
         
 ###################
 #
