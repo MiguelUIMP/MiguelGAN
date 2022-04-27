@@ -417,9 +417,9 @@ class WGAN_trainer:
         if "bias_data" in plot_options:
             data_type.append("biased data")
         if "density" in plot_options:
-            plot_type.append(True)
+            plot_type.append("Density")
         if "counts" in plot_options:
-            plot_type.append(False)
+            plot_type.append("Counts")
         if "log" in plot_options:
             scale_type.append("log")
         if "linear" in plot_options:
@@ -441,9 +441,9 @@ class WGAN_trainer:
 
                         plt.figure(figsize=(11,8));
                         hist_range_com = (compare_df.min()[var], compare_df.max()[var])
-                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=plot_t, alpha=0.5, label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}');
+                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), alpha=0.5, label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}');
                         hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
-                        plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=plot_t, alpha=0.5, label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}');
+                        plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=(plot_t=="Density"), alpha=0.5, label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}');
                         if hist_range_sam[0]<hist_range_com[0]
                             font = {'family': 'serif',
                                     'color':  'darkred',
@@ -460,16 +460,13 @@ class WGAN_trainer:
                                     }
                             out_b=round(hist_range_sam[1], 2)
                             plt.text(0.55, 0.75, f'sample out of upper bound up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
-                        plt.xlabel("ptlep1")
-                        
-                        if plot_t:
-                            plt.ylabel("Density")
-                        if not plot_t:
-                            plt.ylabel("Counts")
+                       
+                        plt.xlabel(var)
+                        plt.ylabel(plot_t)
                         plt.yscale(scale_t)
                         plt.title(f'{var} for generated and simulated MC samples')
                         plt.legend(loc='upper right')
-                        plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}.png')
+                        plt.savefig(f'./GeneratedSamplesTTbar/Comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
                         plt.close()
         
     def postProcess(self, samples_tensor):
