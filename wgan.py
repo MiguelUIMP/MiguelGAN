@@ -186,7 +186,7 @@ class WGAN_trainer:
         values_d_loss_fake_data=[]
         values_d_loss_real_data=[]
         
-        def early_stopping(d_r, d_f, g, g_it, bound=0.001):
+        def early_stopping(d_r, d_f, g, g_it, bound=0.002):
             val_d_r = np.asarray([d_r[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
             val_d_f = np.asarray([d_f[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
             val_g = np.asarray([g[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
@@ -277,6 +277,8 @@ class WGAN_trainer:
         
 
     def gradient_penalty(self, real_imgs, fake_imgs, penalty_coeff=10):
+        #self.G.eval()
+        #self.D.eval()
         epsilon = torch.rand(self.batch_size, 1)
         epsilon = epsilon.expand_as(real_imgs)
         
@@ -295,7 +297,10 @@ class WGAN_trainer:
 
         gradients = gradients.view(self.batch_size, -1)
         gradients_norm = torch.sqrt(torch.sum(gradients ** 2, dim=1) + 1e-12)
-        return torch.mean(penalty_coeff * ((gradients_norm - 1) ** 2))       
+        grad_penal =  torch.mean(penalty_coeff * ((gradients_norm - 1) ** 2))
+        #self.G.train()
+        #self.D.train()
+        return grad_penal
 
     
     def save_model(self,label=""):
@@ -388,8 +393,9 @@ class WGAN_trainer:
                 
     def compare_samples(self, samples_tensor, label):
         
-        samples_df = self.postProcess(samples_tensor)
-        
+        #samples_df = self.postProcess(samples_tensor)
+        samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
+
         if "MC_data" in self.plot_opt:
             compare_df = read_root_files([self.latent_path], compare=True)
             type_data = "original data"
