@@ -154,8 +154,12 @@ class ttbar_LatentGen(data.Dataset):
         
 
 
-def read_root_files(paths, fileType=None, generate=False, compare=False):
+def read_root_files(paths, fileType=None, generate=False, compare=False, process=False):
+    '''
+    Read root files to return torch.tensor to latent space, train, generate samples, or pd.Dataframe to compare final results
+    '''
     data=None
+    # path is a list of paths to root files, all root files will be concat in <data> pd.DataFrame
     for path in paths:
         tf=uproot.open(path)
         tree=tf['t']
@@ -166,29 +170,38 @@ def read_root_files(paths, fileType=None, generate=False, compare=False):
 
         print("Dataframe shape: ", data.shape)
         # data es un pandas.DataFrame, data.values es un array, para una primera
-        # aproximación, vamos a usar solo el ptlep1 de las 34 posibles variables 
+        # aproximación, vamos a usar solo philep1, etalep1 y ptlep1 de las 34 posibles variables 
         # del dataframe
         
-    processed_data = preProcess(data)
-    
-    '''
-        TODO
-        split these 2 cases in 4 cases, in order to compare sample wihtout
-        being preProcessed, ie, in the original angular coordinates 
-    
-    '''
-    if fileType=='train' or generate:
-        #return torch.reshape(torch.tensor(processed_data[["pxlep1", "pylep1", "pzlep1"]][:int(round(data.shape[0]/2))].values), (-1,3))
-        return torch.reshape(torch.tensor(data[["philep1", "etalep1", "ptlep1"]][:int(round(data.shape[0]/2))].values), (-1,3))
-   
-    if fileType=='latent':
-        #return torch.reshape(torch.tensor(processed_data[["pxlep1", "pylep1", "pzlep1"]][int(round(data.shape[0]/2)):].values), (-1,3))
-        return torch.reshape(torch.tensor(data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):].values), (-1,3))
-    
-    if compare:
-        return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
+    # if variables need preprocess or not
+    if process:
+        processed_data = preProcess(data)
+        # MC original dataset and bias dataset are split in 2 disjoint sets each one, it depends on their purpose
+        if fileType=='train' or generate:
+            # in the reshape (-1,3): -1 stands for the dataset size, keep it, 3 satands for the variables (columns) selected 
+            return torch.reshape(torch.tensor(processed_data[["pxlep1", "pylep1", "pzlep1"]][:int(round(data.shape[0]/2))].values), (-1,3)) 
+
+        if fileType=='latent':
+            return torch.reshape(torch.tensor(processed_data[["pxlep1", "pylep1", "pzlep1"]][int(round(data.shape[0]/2)):].values), (-1,3))
+
+        if compare:
+            return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
+        
+    if not process:
+
+        if fileType=='train' or generate:
+            return torch.reshape(torch.tensor(data[["philep1", "etalep1", "ptlep1"]][:int(round(data.shape[0]/2))].values), (-1,3))
+
+        if fileType=='latent':
+            return torch.reshape(torch.tensor(data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):].values), (-1,3))
+
+        if compare:
+            return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
             
 def preProcess(data):
+    '''
+    Change from spherical transverse coordinates to cartesian 
+    '''
     px = data['ptlep1']*np.cos(data['philep1'])
     py = data['ptlep1']*np.sin(data['philep1'])
     pz = data['ptlep1']*np.sinh(data['etalep1'])
