@@ -467,8 +467,8 @@ class WGAN_trainer:
                         plt.yscale(scale_t)
                         plt.title(f'{var} for generated and simulated MC samples')
                         plt.legend(loc='upper right')
-                        plt.savefig(f'./GeneratedSamplesTTbar/Comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
-                        print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/Comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
+                        plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
+                        print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
                         plt.close()
         
     def postProcess(self, samples_tensor):
