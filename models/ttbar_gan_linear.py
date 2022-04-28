@@ -13,7 +13,7 @@ class DenseNNgenerator(torch.nn.Module):
         self.main_module = nn.Sequential(
             
             nn.Linear((channels+random_noise), 100),
-            nn.BatchNorm1d(num_features=100),
+            #nn.BatchNorm1d(num_features=100),
             nn.ReLU(True),
             
             nn.Linear( 100, 60),
