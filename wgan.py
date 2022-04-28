@@ -440,7 +440,7 @@ class WGAN_trainer:
          
                     for var in samples_df:
 
-                        plt.figure();#figsize=(11,8));
+                        plt.figure(figsize=(11,8));
                         hist_range_com = (compare_df.min()[var], compare_df.max()[var])
                         plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), alpha=0.5, label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}');
                         hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
