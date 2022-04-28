@@ -16,15 +16,18 @@ The `environment.yml` file contains the packages needed to run the code with pyt
 ### Train a GAN with ttbar events with bias
 #### Execute the training (about 3h in cpu) in background and save the output to a test.txt file
 
-```nohup python wgan.py --generator_iters 80000 --model ttbarGAN_linear --data ttbar --trainingLabel ttbartraining --do_what train --constraint penalty --alpha 1e-05 --latent_space uniform --optimizer Adam --n_critic 8 --penalty_coeff 100 > ./test.txt &```
+```nohup python wgan.py --model ttbarGAN_linear --do_what train --generator_iters 100000 --n_critic 8 --batch_size 64 --optimizer Adam --alpha 1e-5 --constraint penalty --penalty_coeff 50 --latent_space uniform > ./test.txt &```
+
+```nohup python wgan.py --model ttbarGAN_linear --do_what train --generator_iters 100000 --n_critic 8 --batch_size 64 --optimizer RMSprop --alpha 5e-5 --momentum 5e-7 --constraint clipping --clipping_value 0.05 --latent_space gaussian > ./test.txt &```
 
 ### Generate events from the trained GAN
+#### Ignore output file
 
-```python wgan.py --model ttbarGAN_linear --data ttbar --do_what generate --save_samples pt --n_samples 37066 --num_model 42```
+```nohup python wgan.py --model ttbarGAN_linear --do_what generate --save_samples pt --n_samples 37066 --num_model 42 >/dev/null 2>&1 &```
 
 ### Create plots comparing the generated sample with bias or original samples
 
-```python wgan.py --data ttbar --num_model 42 --do_what plot --plot_opt bias_data --plot_opt density --plot_opt linear```
+```python wgan.py --do_what plot --plot_opt bias_data --plot_opt density --plot_opt linear --num_model 42```
 
 
 ## Package contents
