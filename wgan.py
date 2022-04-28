@@ -487,26 +487,26 @@ if __name__=="__main__":
     from optparse import OptionParser
     parser = OptionParser()
 
-    parser.add_option("-m", "--model",           dest="model", type="string", default="convNNforNist", help="Architecture of the generator and critic. It also fixes the latent space distribution");
+    parser.add_option("--no-cuda",           dest="cuda", action='store_false', default=True, help="Do not try to use cuda. Otherwise it will try to use cuda only if its available");
+    parser.add_option("--cuda_index",           dest="cuda_index", type="int", default=0, help="Index of the device to use");
     parser.add_option("--experiment",           dest="experiment", type="string", default="TTbar", help="experiment to load models");
-    parser.add_option("--n_critic",           dest="n_critic", type="int", default=5, help="Number of iterations of the critic per generator iteration");
+    parser.add_option("--model",           dest="model", type="string", default="ttbarGAN_linear", help="Architecture of the generator and critic. It also fixes the latent space distribution");
+    parser.add_option("--data",           dest="data", type="string", default='ttbar', help="Dataset to train with");
+    parser.add_option("--do_what",           dest="do_what", action='append', type="string", default=[], help="What to do");
+    parser.add_option("--trainingLabel",           dest="trainingLabel",  type="string", default='ttbartraining', help="Label where store to/read from the models");
     parser.add_option("--generator_iters",           dest="generator_iters", type="int", default=40000, help="Number of generator iterations");
+    parser.add_option("--n_critic",           dest="n_critic", type="int", default=5, help="Number of iterations of the critic per generator iteration");
     parser.add_option("--batch_size",           dest="batch_size", type="int", default=64, help="Mini-batch size");
     parser.add_option("--optimizer",           dest="optimizer", type="string", default="RMSprop", help="Optimizer to use, RMSprop, Adam or SGD");
     parser.add_option("--alpha",           dest="alpha", type="float", default=0.00005, help="Learning rate");
     parser.add_option("--momentum",           dest="momentum", type="float", default=0, help="Momentum");
-    parser.add_option("--clipping_value",           dest="clipping_value", type="float", default=0.01, help="Clipping parameters of the discriminator between (-c,c)");
-    parser.add_option("--data",           dest="data", type="string", default='mnist', help="Dataset to train with");
-    parser.add_option("--no-cuda",           dest="cuda", action='store_false', default=True, help="Do not try to use cuda. Otherwise it will try to use cuda only if its available");
-    parser.add_option("--cuda_index",           dest="cuda_index", type="int", default=0, help="Index of the device to use");
-    parser.add_option("--do_what",           dest="do_what", action='append', type="string", default=[], help="What to do");
-    parser.add_option("--trainingLabel",           dest="trainingLabel",  type="string", default='trainingv1', help="Label where store to/read from the models");
-    parser.add_option("--n_samples",           dest="n_samples",  type="int", default=12, help="Number of samples to be generated");
-    parser.add_option("--save_samples",           dest="save_samples",  type="string", default="all", help="How to save the samples generated: in .pt (use pt), in .root (use root), both (use all), or do not save (use none)");
-    parser.add_option("--latent_space",           dest="latent_space",  type="string", default="gaussian", help="use uniform to sample from uniform dist in latent space or gaussian to follow suit from gaussian dist");
-    parser.add_option("--num_model",           dest="num_model",  type="int", default=None, help="model number from which load the data to generate sampels or plot samples");
     parser.add_option("--constraint",           dest="constraint",  type="string", default="clipping", help="Lipschitz constraint, use clipping weights or gradient penalty");
     parser.add_option("--penalty_coeff",           dest="penalty_coeff",  type="float", default=10.0, help="Gradient penalty coefficient");
+    parser.add_option("--clipping_value",           dest="clipping_value", type="float", default=0.01, help="Clipping parameters of the discriminator between (-c,c)");
+    parser.add_option("--latent_space",           dest="latent_space",  type="string", default="gaussian", help="use uniform to sample from uniform dist in latent space or gaussian to follow suit from gaussian dist");
+    parser.add_option("--num_model",           dest="num_model",  type="int", default=None, help="model number from which load the data to generate sampels or plot samples");
+    parser.add_option("--n_samples",           dest="n_samples",  type="int", default=37066, help="Number of samples to be generated");
+    parser.add_option("--save_samples",           dest="save_samples",  type="string", default="all", help="How to save the samples generated: in .pt (use pt), in .root (use root), both (use all), or do not save (use none)");
     parser.add_option("--plot_opt",           dest="plot_opt", action='append', type="string", default=[], help="plot histogram with log_scale or normal_scale, counts or density, bias_data or MC_data");
 
 
