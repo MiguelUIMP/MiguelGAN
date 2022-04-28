@@ -432,8 +432,8 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_mean = round(compare_df.mean(),2)
-            compare_std = round(compare_df.std(),2)
+            compare_mean = round(round(compare_df.mean(), 2), 2)
+            compare_std = round(round(compare_df.std(), 2), 2)
 
             for plot_t in plot_type:
                 for scale_t in scale_type:
