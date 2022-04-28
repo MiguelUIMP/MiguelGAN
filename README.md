@@ -20,7 +20,7 @@ The `environment.yml` file contains the packages needed to run the code with pyt
 
 ### Generate events from the trained GAN
 
-```python wgan.py --model ttbarGAN_linear --data ttbar --do_what generate --save_samples pt --num_samples 37066 --num_model 42```
+```python wgan.py --model ttbarGAN_linear --data ttbar --do_what generate --save_samples pt --n_samples 37066 --num_model 42```
 
 ### Create plots comparing the generated sample with bias or original samples
 
