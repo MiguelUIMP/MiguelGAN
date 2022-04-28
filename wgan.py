@@ -432,15 +432,15 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_mean = round(round(compare_df.mean(), 2), 2)
-            compare_std = round(round(compare_df.std(), 2), 2)
+            compare_mean = np.round(round(compare_df.mean(), 2), 2)
+            compare_std = np.round(round(compare_df.std(), 2), 2)
 
             for plot_t in plot_type:
                 for scale_t in scale_type:
          
                     for var in samples_df:
 
-                        plt.figure(figsize=(11,8));
+                        plt.figure();#figsize=(11,8));
                         hist_range_com = (compare_df.min()[var], compare_df.max()[var])
                         plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), alpha=0.5, label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}');
                         hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
@@ -449,18 +449,18 @@ class WGAN_trainer:
                             font = {'family': 'serif',
                                     'color':  'darkred',
                                     'weight': 'normal',
-                                    'size': 12,
+                                    'size': 11,
                                     }
                             out_b=round(hist_range_sam[0], 2)
-                            plt.text(0.55, 0.75, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
+                            plt.text(0.60, 0.85, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
                         if hist_range_sam[1]>hist_range_com[1]:
                             font = {'family': 'serif',
                                     'color':  'darkred',
                                     'weight': 'normal',
-                                    'size': 16,
+                                    'size': 11,
                                     }
                             out_b=round(hist_range_sam[1], 2)
-                            plt.text(0.55, 0.75, f'sample out of upper bound up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
+                            plt.text(0.60, 0.85, f'sample out of upper bound up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
                        
                         plt.xlabel(var)
                         plt.ylabel(plot_t)
