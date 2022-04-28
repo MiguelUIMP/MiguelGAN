@@ -21,7 +21,7 @@ class DenseNNgenerator(torch.nn.Module):
             nn.ReLU(True),
             
             nn.Linear(200, 100),
-            nn.BatchNorm1d(num_features=200),
+            nn.BatchNorm1d(num_features=100),
             nn.ReLU(True),
           
             nn.Linear(100, channels),
