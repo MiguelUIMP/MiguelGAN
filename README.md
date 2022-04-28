@@ -1,6 +1,6 @@
 # MC simulations with WGAN 
 
-Code to generate MC simulations with WGANs of t $\bar{t}$
+Code to train, generate and analyse MC simulations with WGANs of t t-bar process.
 
 ## Set up the environment 
 
@@ -11,17 +11,10 @@ The `environment.yml` file contains the packages needed to run the code with pyt
 
 ```conda activate pytorch_v1_cuda_10_2```
 
-## Examples with different datasets
-
-### Generate images using the MNIST dataset
-
-```python wgan.py --generator_iters 40000  --model convNNforNist --data mnist --trainingLabel mnisttraining  --do_what train --do_what generate```
-
-### Generate Drell-Yan events using gen-level MC
-
-```python wgan.py --generator_iters 100000  --model dense6inputs --data dygen --trainingLabel dytraining --do_what train --do_what generate --n_samples 10000 ```
+## Examples of use
 
 ### Train a GAN with ttbar events with bias
+#### Execute the training (about 3h in cpu) in background and save the output to a test.txt file
 
 ```nohup python wgan.py --generator_iters 80000 --model ttbarGAN_linear --data ttbar --trainingLabel ttbartraining --do_what train --constraint penalty --alpha 1e-05 --latent_space uniform --optimizer Adam --n_critic 8 --penalty_coeff 100 > ./test.txt &```
 
