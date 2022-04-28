@@ -444,7 +444,7 @@ class WGAN_trainer:
                         plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), alpha=0.5, label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}');
                         hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
                         plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=(plot_t=="Density"), alpha=0.5, label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}');
-                        if hist_range_sam[0]<hist_range_com[0]
+                        if hist_range_sam[0]<hist_range_com[0]:
                             font = {'family': 'serif',
                                     'color':  'darkred',
                                     'weight': 'normal',
@@ -452,7 +452,7 @@ class WGAN_trainer:
                                     }
                             out_b=round(hist_range_sam[0], 2)
                             plt.text(0.55, 0.75, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
-                        if hist_range_sam[1]>hist_range_com[1]
+                        if hist_range_sam[1]>hist_range_com[1]:
                             font = {'family': 'serif',
                                     'color':  'darkred',
                                     'weight': 'normal',
