@@ -414,9 +414,9 @@ class WGAN_trainer:
         scale_type=[]
         
         if "original_data" in plot_options:
-            data_type.append("original data")
+            data_type.append("original_data")
         if "bias_data" in plot_options:
-            data_type.append("biased data")
+            data_type.append("biased_data")
         if "density" in plot_options:
             plot_type.append("Density")
         if "counts" in plot_options:
@@ -427,9 +427,9 @@ class WGAN_trainer:
             scale_type.append("linear")
             
         for data_t in data_type:
-            if data_t == "original data":
+            if data_t == "original_data":
                 compare_df = read_root_files([self.latent_path], compare=True)
-            if data_t == "biased data":
+            if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
             compare_mean = round(compare_df.mean(),2)
