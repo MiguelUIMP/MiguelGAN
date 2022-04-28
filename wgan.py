@@ -426,9 +426,9 @@ class WGAN_trainer:
             scale_type.append("linear")
             
         for data_t in data_type:
-            if data_t == "original_data":
+            if data_t == "original data":
                 compare_df = read_root_files([self.latent_path], compare=True)
-            if data_t == "bias_data":
+            if data_t == "biased data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
             compare_mean = round(compare_df.mean(),2)
