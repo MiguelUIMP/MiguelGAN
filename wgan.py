@@ -384,6 +384,7 @@ class WGAN_trainer:
                 
     def plot_samples(self, plot_options, num_model, label="FINAL", process=False):
         
+        print("Creating plots...")
         # load last model if not model number is passed
         if num_model is None:
             num_docs = len(os.listdir("./TrainedGANs"))
@@ -467,6 +468,7 @@ class WGAN_trainer:
                         plt.title(f'{var} for generated and simulated MC samples')
                         plt.legend(loc='upper right')
                         plt.savefig(f'./GeneratedSamplesTTbar/Comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
+                        print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/Comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
                         plt.close()
         
     def postProcess(self, samples_tensor):
