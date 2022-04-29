@@ -175,8 +175,8 @@ class WGAN_trainer:
             
         if self.optimizer == 'Adam':
             # Default values for (beta_1, beta2_)=(0.9, 0.999), paper WGAN-GP values (beta_1, beta_2)=(0, 0.9)
-            optim_discriminator = torch.optim.Adam( self.D.parameters(), lr=self.alpha, betas=(0, 0.9))  
-            optim_generator     = torch.optim.Adam( self.G.parameters(), lr=self.alpha, betas=(0, 0.9))
+            optim_discriminator = torch.optim.Adam( self.D.parameters(), lr=self.alpha, betas=(0.9, 0.999))  
+            optim_generator     = torch.optim.Adam( self.G.parameters(), lr=self.alpha, betas=(0.9, 0.999))
             
         if self.optimizer == 'SGD':
             optim_discriminator = torch.optim.SGD( self.D.parameters(), lr=self.alpha, momentum=self.momentum)
