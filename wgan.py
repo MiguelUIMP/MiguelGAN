@@ -186,7 +186,7 @@ class WGAN_trainer:
         values_d_loss_fake_data=[]
         values_d_loss_real_data=[]
         
-        def early_stopping(d_r, d_f, g, g_it, bound=0.004):
+        def early_stopping(d_r, d_f, g, g_it, bound=0.002):
             val_d_r = np.asarray([d_r[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
             val_d_f = np.asarray([d_f[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
             val_g = np.asarray([g[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
@@ -196,7 +196,7 @@ class WGAN_trainer:
             lower_d_f = np.mean(val_d_f) - bound
             upper_g = np.mean(val_g) + bound
             lower_g = np.mean(val_g) - bound
-            return ( any(val_d_r>upper_d_r) or any(val_d_r<lower_d_r) or any(val_d_f>upper_d_f) or any(val_d_f<lower_d_f) or any(val_g>upper_g) or any(val_g<lower_g) )
+            return ( (all(val_d_r<upper_d_r) and all(val_d_r>lower_d_r)) or (all(val_d_f<upper_d_f) and all(val_d_f>lower_d_f)) or (all(val_g<upper_g) and all(val_g>lower_g)) )
 
         
         for g_iter in range(self.generator_iters):
