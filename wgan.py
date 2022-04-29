@@ -186,10 +186,10 @@ class WGAN_trainer:
         values_d_loss_fake_data=[]
         values_d_loss_real_data=[]
         
-        def early_stopping(d_r, d_f, g, g_it, bound=0.0001):
-            val_d_r = np.asarray([d_r[ind] for ind in [g_it-9000, g_it-8000, g_it-7000, g_it-6000, g_it-5000, g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
-            val_d_f = np.asarray([d_f[ind] for ind in [g_it-9000, g_it-8000, g_it-7000, g_it-6000, g_it-5000, g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
-            val_g = np.asarray([g[ind] for ind in [g_it-9000, g_it-8000, g_it-7000, g_it-6000, g_it-5000, g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
+        def early_stopping(d_r, d_f, g, g_it, bound=0.001):
+            val_d_r = np.asarray([d_r[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
+            val_d_f = np.asarray([d_f[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
+            val_g = np.asarray([g[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
             upper_d_r = np.mean(val_d_r) + bound
             lower_d_r = np.mean(val_d_r) - bound
             upper_d_f = np.mean(val_d_f) + bound
@@ -261,8 +261,8 @@ class WGAN_trainer:
             #    self.save_model(label=f"gen_iter_{g_iter}")
             
             # early stopping condition check, to avoid waste of time if the GAN loss functions get stuck without improvements
-            if not (g_iter%10000) and g_iter!=0:
-                if not early_stopping(values_d_loss_real_data, values_d_loss_fake_data, values_g_loss_data, g_iter):
+            if not (g_iter%5000) and g_iter!=0:
+                if early_stopping(values_d_loss_real_data, values_d_loss_fake_data, values_g_loss_data, g_iter):
                     print("GAN loss function got stuck")
                     break
                     
