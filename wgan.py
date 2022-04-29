@@ -226,6 +226,10 @@ class WGAN_trainer:
                     loss_a= -torch.mean(self.D(real_data)) + torch.mean(self.D(self.G(fake_data))) + grad_penalty
                     loss_a.backward() # compute gradients 
                     optim_discriminator.step() # move the parameters
+                    
+                    # clip the parameters. Lets put both penalty and clipping together
+                    for p in self.D.parameters():
+                        p.data.clamp_(-self.c,self.c)
 
                 # Get the components of the loss to store them 
                 loss_a_real_data=-torch.mean(self.D(real_data)).data.cpu()
