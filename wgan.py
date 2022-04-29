@@ -408,7 +408,8 @@ class WGAN_trainer:
         if process:
             samples_df = self.postProcess(samples_tensor)
         if not process:
-            samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
+            #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
+            samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
             
         samples_mean = round(samples_df.mean(),2)
         samples_std = round(samples_df.std(),2)
