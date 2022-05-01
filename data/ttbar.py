@@ -186,7 +186,7 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
 
         if compare:
             #return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
-            return preprocessed_data[["pxlep1", "pylep1", "pzlep1"]][int(round(data.shape[0]/2)):]
+            return processed_data[["pxlep1", "pylep1", "pzlep1"]][int(round(data.shape[0]/2)):]
         
     if not process:
 
