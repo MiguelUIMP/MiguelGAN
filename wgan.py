@@ -186,7 +186,7 @@ class WGAN_trainer:
         values_d_loss_fake_data=[]
         values_d_loss_real_data=[]
         
-        def early_stopping(d_r, d_f, g, g_it, bound=0.001):
+        def early_stopping(d_r, d_f, g, g_it, bound=0.0001):
             val_d_r = np.asarray([d_r[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
             val_d_f = np.asarray([d_f[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
             val_g = np.asarray([g[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
