@@ -384,7 +384,7 @@ class WGAN_trainer:
                 
                 
                 
-    def plot_samples(self, plot_options, num_model, label="FINAL", process=False):
+    def plot_samples(self, plot_options, num_model, label="FINAL", process=True):
         
         print("Creating plots...")
         # load last model if not model number is passed
@@ -478,7 +478,9 @@ class WGAN_trainer:
     def postProcess(self, samples_tensor):
         
         samples = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
+        
         phi = np.arctan(samples['pylep1']/samples['pxlep1'])
+        phi = phi*(samples['pxlep1']>0) + phi*(samples['pxlep1']<0) + ((samples['pylep1']>0)-0.5)*2 * (samples['pxlep1']<0)*np.pi
         pt = np.sqrt(samples['pylep1']**2+samples['pxlep1']**2)
         eta = np.arcsinh(samples['pzlep1']/pt)
         
