@@ -375,13 +375,19 @@ class WGAN_trainer:
                 torch.save(samples_tensor, f)
             print("Samples successfully saved in:", os.path.join(path, f'./GeneratedSamplesTTbar/samples_{label}.pt'))
         
+        '''
+        TODO to write in root files, type the colnames of the dataset, use 
+        tf=uproot.open(path)
+        tree=tf['t']
+        tree.keys()
+        
         if toRoot:
             with uproot.recreate(os.path.join(path, f'./GeneratedSamplesTTbar/samples_{label}.root')) as f:
                 df = pd.DataFrame(samples_tensor).astype("float")
                 df.columns=['philep1', 'etalep1', 'ptlep1']
                 f['t'] = df
             print("Samples successfully saved in:", os.path.join(path, f'./GeneratedSamplesTTbar/samples_{label}.root'))
-                
+        '''        
                 
                 
     def plot_samples(self, plot_options, num_model, label="FINAL", process=True):
@@ -435,8 +441,8 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_mean = np.round(round(compare_df.mean(), 2), 2)
-            compare_std = np.round(round(compare_df.std(), 2), 2)
+            compare_mean = round(compare_df.mean(), 2)
+            compare_std = round(compare_df.std(), 2)
 
             for plot_t in plot_type:
                 for scale_t in scale_type:
@@ -476,9 +482,7 @@ class WGAN_trainer:
                         plt.close()
         
     def postProcess(self, samples_tensor, var_to_use):
-                
-        return pd.DataFrame({'philep1': phi, 'etalep1': eta, 'ptlep1': pt})
-       
+
         '''
         Change from cartesian coordinates to spherical transverse
         '''
