@@ -401,10 +401,10 @@ class WGAN_trainer:
             
         # samples tensor load to cpu, it could be load in the gpu    
         samples_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}.pt', map_location=torch.device('cpu'))
-        
+        var_to_use = read_root_files([self.latent_path], pass_df=True)
         # if samples need postProcess to change from cartesian to spherical basis or are already load in spherical ones
         if process:
-            samples_df = self.postProcess(samples_tensor)
+            samples_df = self.postProcess(samples_tensor, var_to_use)
         if not process:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
             samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
@@ -475,17 +475,32 @@ class WGAN_trainer:
                         print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
                         plt.close()
         
-    def postProcess(self, samples_tensor):
-        
-        samples = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
-        
-        phi = np.arctan(samples['pylep1']/samples['pxlep1'])
-        phi = phi*(samples['pxlep1']>0) + phi*(samples['pxlep1']<0) + ((samples['pylep1']>0)-0.5)*2 * (samples['pxlep1']<0)*np.pi
-        pt = np.sqrt(samples['pylep1']**2+samples['pxlep1']**2)
-        eta = np.arcsinh(samples['pzlep1']/pt)
-        
+    def postProcess(self, samples_tensor, var_to_use):
+                
         return pd.DataFrame({'philep1': phi, 'etalep1': eta, 'ptlep1': pt})
-        
+       
+        '''
+        Change from cartesian coordinates to spherical transverse
+        '''
+        samples = pd.DataFrame(data=samples_tensor.numpy(), columns=var_to_use, dtype="float64")
+        newData = None
+        for var in ['lep1', 'lep2', 'b1', 'b2', 'MET']:
+            # meter condicion para no usar la eta del MET, osea no sacar pzMET
+            phi = np.arctan(samples[''.join(('py', var))]/samples[''.join(('px', var))])
+            phi = phi*(samples[''.join(('px', var))]>0) + phi*(samples[''.join(('px', var))]<0) + ((samples[''.join(('py', var))]>0)-0.5)*2 * (samples[''.join(('px', var))]<0)*np.pi
+            pt = np.sqrt(samples[''.join(('py', var))]**2+samples[''.join(('px', var))]**2)
+            if var != 'MET':
+                eta = np.arcsinh(samples[''.join(('pz', var))]/pt) 
+
+            if newData is None:
+                newData=pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt, ''.join(('m', var)): samples[''.join(('m', var))]})
+                continue
+            if newData is not None and var != 'MET':
+                newData=pd.concat(newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt, ''.join(('m', var)): samples[''.join(('m', var))]}), axis=1)
+            if newData is not None and var == 'MET':
+                newData=pd.concat(newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('pt', var)): pt}), axis=1)
+
+        return newData
 
 
 if __name__=="__main__":
