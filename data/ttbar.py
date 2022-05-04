@@ -208,10 +208,17 @@ def preProcess(data):
         # meter condicion para no usar la eta del MET, osea no sacar pzMET
         px = data[''.join(('pt', var))]*np.cos(data[''.join(('phi', var))])
         py = data[''.join(('pt', var))]*np.sin(data[''.join(('phi', var))])
-        pz = data[''.join(('pt', var))]*np.sinh(data[''.join(('eta', var))])
-    # pd.concat(newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz}))
+        if var != 'MET':
+            pz = data[''.join(('pt', var))]*np.sinh(data[''.join(('eta', var))]) 
         
-    return pd.DataFrame({'pxlep1': px, 'pylep1': py, 'pzlep1': pz})
+        if newData is None:
+            newData=pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz, ''.join(('m', var)): data[''.join(('m', var))]})
+        if newData is not None and var != 'MET':
+            newData=pd.concat(newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz, ''.join(('m', var)): data[''.join(('m', var))]}), axis=1)
+        if newData is not None and var == 'MET':
+            newData=pd.concat(newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py}), axis=1)
+        
+    return newData
     
 
 
