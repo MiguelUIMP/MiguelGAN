@@ -154,7 +154,7 @@ class ttbar_LatentGen(data.Dataset):
         
 
 
-def read_root_files(paths, fileType=None, generate=False, compare=False, process=True):
+def read_root_files(paths, fileType=None, generate=False, compare=False, process=True, pass_df=False):
     '''
     Read root files to return torch.tensor to latent space, train, generate samples, or pd.Dataframe to compare final results
     '''
@@ -174,7 +174,8 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
         # del dataframe
     
     # workaround due to in real life we dont have nu data neither mMET and etaMET
-    var_to_use = [var for var in data.columns if var.find('nu') == -1 and var.find('mMET') == -1 and var.find('etaMET') == -1]
+    if pass_df:
+        return var_to_use = [var for var in data.columns if var.find('nu') == -1 and var.find('mMET') == -1 and var.find('etaMET') == -1]
     # if variables need preprocess or not
     if process:
         processed_data = preProcess(data)
