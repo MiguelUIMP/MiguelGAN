@@ -172,32 +172,34 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
         # data es un pandas.DataFrame, data.values es un array, para una primera
         # aproximación, vamos a usar solo philep1, etalep1 y ptlep1 de las 34 posibles variables 
         # del dataframe
-        
+    
+    # workaround due to in real life we dont have nu data neither mMET and etaMET
+    var_to_use = [var for var in data.columns if var.find('nu') == -1 and var.find('mMET') == -1 and var.find('etaMET') == -1]
     # if variables need preprocess or not
     if process:
         processed_data = preProcess(data)
         # MC original dataset and bias dataset are split in 2 disjoint sets each one, it depends on their purpose
         if fileType=='train' or generate:
             # in the reshape (-1,3): -1 stands for the dataset size, keep it, 3 satands for the variables (columns) selected 
-            return torch.reshape(torch.tensor(processed_data[["pxlep1", "pylep1", "pzlep1"]][:int(round(data.shape[0]/2))].values), (-1,3)) 
+            return torch.reshape(torch.tensor(processed_data[:int(round(data.shape[0]/2))].values), (-1,3)) 
 
         if fileType=='latent':
-            return torch.reshape(torch.tensor(processed_data[["pxlep1", "pylep1", "pzlep1"]][int(round(data.shape[0]/2)):].values), (-1,3))
+            return torch.reshape(torch.tensor(processed_data[int(round(data.shape[0]/2)):].values), (-1,3))
 
         if compare:
             #return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
-            return processed_data[["pxlep1", "pylep1", "pzlep1"]][int(round(data.shape[0]/2)):]
+            return data[var_to_use][int(round(data.shape[0]/2)):]
         
     if not process:
 
         if fileType=='train' or generate:
-            return torch.reshape(torch.tensor(data[["philep1", "etalep1", "ptlep1"]][:int(round(data.shape[0]/2))].values), (-1,3))
+            return torch.reshape(torch.tensor(data[var_to_use][:int(round(data.shape[0]/2))].values), (-1,3))
 
         if fileType=='latent':
-            return torch.reshape(torch.tensor(data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):].values), (-1,3))
+            return torch.reshape(torch.tensor(data[var_to_use][int(round(data.shape[0]/2)):].values), (-1,3))
 
         if compare:
-            return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
+            return data[var_to_use][int(round(data.shape[0]/2)):]
             
 def preProcess(data):
     '''
