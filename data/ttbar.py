@@ -183,10 +183,10 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
         # MC original dataset and bias dataset are split in 2 disjoint sets each one, it depends on their purpose
         if fileType=='train' or generate:
             # in the reshape (-1,3): -1 stands for the dataset size, keep it, 3 satands for the variables (columns) selected 
-            return torch.reshape(torch.tensor(processed_data[:int(round(data.shape[0]/2))].values), (-1,3)) 
+            return torch.reshape(torch.tensor(processed_data[:int(round(data.shape[0]/2))].values), (-1,18)) 
 
         if fileType=='latent':
-            return torch.reshape(torch.tensor(processed_data[int(round(data.shape[0]/2)):].values), (-1,3))
+            return torch.reshape(torch.tensor(processed_data[int(round(data.shape[0]/2)):].values), (-1,18))
 
         if compare:
             #return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
@@ -195,10 +195,10 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
     if not process:
 
         if fileType=='train' or generate:
-            return torch.reshape(torch.tensor(data[var_to_use][:int(round(data.shape[0]/2))].values), (-1,3))
+            return torch.reshape(torch.tensor(data[var_to_use][:int(round(data.shape[0]/2))].values), (-1,18))
 
         if fileType=='latent':
-            return torch.reshape(torch.tensor(data[var_to_use][int(round(data.shape[0]/2)):].values), (-1,3))
+            return torch.reshape(torch.tensor(data[var_to_use][int(round(data.shape[0]/2)):].values), (-1,18))
 
         if compare:
             return data[var_to_use][int(round(data.shape[0]/2)):]
