@@ -500,9 +500,9 @@ class WGAN_trainer:
                 newData=pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt, ''.join(('m', var)): samples[''.join(('m', var))]})
                 continue
             if newData is not None and var != 'MET':
-                newData=pd.concat(newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt, ''.join(('m', var)): samples[''.join(('m', var))]}), axis=1)
+                newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt, ''.join(('m', var)): samples[''.join(('m', var))]})), axis=1)
             if newData is not None and var == 'MET':
-                newData=pd.concat(newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('pt', var)): pt}), axis=1)
+                newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('pt', var)): pt})), axis=1)
 
         return newData
 
