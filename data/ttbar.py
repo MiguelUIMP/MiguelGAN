@@ -219,9 +219,9 @@ def preProcess(data):
             newData=pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz, ''.join(('m', var)): data[''.join(('m', var))]})
             continue
         if newData is not None and var != 'MET':
-            newData=pd.concat(newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz, ''.join(('m', var)): data[''.join(('m', var))]}), axis=1)
+            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz, ''.join(('m', var)): data[''.join(('m', var))]})), axis=1)
         if newData is not None and var == 'MET':
-            newData=pd.concat(newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py}), axis=1)
+            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py})), axis=1)
         
     return newData
     
