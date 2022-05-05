@@ -12,18 +12,18 @@ class DenseNNgenerator(torch.nn.Module):
         super().__init__()
         self.main_module = nn.Sequential(
             
-            nn.Linear((channels+random_noise), 100),
+            nn.Linear((channels+random_noise), 300),
             #nn.BatchNorm1d(num_features=100),
             nn.ReLU(True),
             
-            nn.Linear( 100, 60),
+            nn.Linear( 300, 150),
            # nn.BatchNorm1d(num_features=60),
             nn.ReLU(True),
             
-            nn.Linear(60, 40),
+            nn.Linear(150, 50),
             nn.ReLU(True),
 
-            nn.Linear( 40, channels)
+            nn.Linear( 50, channels)
           
         )
 
@@ -59,8 +59,8 @@ class ttbarGAN():
 
 
     def __init__(self, lat_space):
-        channels = 3 # canales de salida de los datos, cuantas variables obtener
-        random_noise = 30 # canales de ruido aleatorio que meter
+        channels = 18 # canales de salida de los datos, cuantas variables obtener
+        random_noise = 100 # canales de ruido aleatorio que meter
         self.G=DenseNNgenerator(channels=channels, random_noise=random_noise)
         self.D=DenseNNdiscriminator(channels=channels)
         '''
