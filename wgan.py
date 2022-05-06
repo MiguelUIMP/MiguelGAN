@@ -1,5 +1,6 @@
 import torch
 from torch.autograd import Variable
+from torch import optim
 import uproot
 import os 
 import numpy as np
@@ -172,23 +173,23 @@ class WGAN_trainer:
         latent = get_infinite_batches(self.latent_loader)
 
         if self.optimizer == 'RMSprop':
-            optim_discriminator = torch.optim.RMSprop( self.D.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
-            optim_generator     = torch.optim.RMSprop( self.G.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
-            #scheduler_discriminator = MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
-            scheduler_generator = MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            optim_discriminator = optim.RMSprop( self.D.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
+            optim_generator     = optim.RMSprop( self.G.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
+            #scheduler_discriminator = optim.lr_scheduler.MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            scheduler_generator = optim.lr_scheduler.MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
         
         if self.optimizer == 'Adam':
             # Default values for (beta_1, beta2_)=(0.9, 0.999), paper WGAN-GP values (beta_1, beta_2)=(0, 0.9)
-            optim_discriminator = torch.optim.Adam( self.D.parameters(), lr=self.alpha*self.gen_coeff, betas=(0.9, 0.999))  
-            optim_generator     = torch.optim.Adam( self.G.parameters(), lr=self.alpha*self.gen_coeff, betas=(0.9, 0.999))
-            #scheduler_discriminator = MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
-            scheduler_generator = MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            optim_discriminator = optim.Adam( self.D.parameters(), lr=self.alpha*self.gen_coeff, betas=(0.9, 0.999))  
+            optim_generator     = optim.Adam( self.G.parameters(), lr=self.alpha*self.gen_coeff, betas=(0.9, 0.999))
+            #scheduler_discriminator = optim.lr_scheduler.MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            scheduler_generator = optim.lr_scheduler.MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
            
         if self.optimizer == 'SGD':
-            optim_discriminator = torch.optim.SGD( self.D.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
-            optim_generator     = torch.optim.SGD( self.G.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
-            #scheduler_discriminator = MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
-            scheduler_generator = MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            optim_discriminator = optim.SGD( self.D.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
+            optim_generator     = optim.SGD( self.G.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
+            #scheduler_discriminator = optim.lr_scheduler.MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            scheduler_generator = optim.lr_scheduler.MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
 
         values_g_loss_data     =[]
         values_d_loss_fake_data=[]
