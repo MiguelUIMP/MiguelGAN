@@ -190,7 +190,7 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
 
         if compare:
             #return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
-            return data[var_to_use][int(round(data.shape[0]/2)):]
+            return data[[var for var in data.columns if var.find('nu') == -1 and var.find('mMET') == -1 and var.find('etaMET') == -1]][int(round(data.shape[0]/2)):]
         
     if not process:
 

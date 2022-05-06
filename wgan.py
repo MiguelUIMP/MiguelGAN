@@ -171,7 +171,7 @@ class WGAN_trainer:
 
         if self.optimizer == 'RMSprop':
             optim_discriminator = torch.optim.RMSprop( self.D.parameters(), lr=self.alpha, momentum=self.momentum)
-            optim_generator     = torch.optim.RMSprop( self.G.parameters(), lr=self.alpha, momentum=self.momentum)
+            optim_generator     = torch.optim.RMSprop( self.G.parameters(), lr=self.alpha*2, momentum=self.momentum)
             
         if self.optimizer == 'Adam':
             # Default values for (beta_1, beta2_)=(0.9, 0.999), paper WGAN-GP values (beta_1, beta_2)=(0, 0.9)
@@ -201,6 +201,8 @@ class WGAN_trainer:
         
         for g_iter in range(self.generator_iters):
                 
+            if not g_iter%100000 and g_iter!=0:
+                self.n_critic+=1
             for p in self.D.parameters():
                 p.requires_grad=True
             for t in range(self.n_critic):
