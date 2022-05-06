@@ -24,9 +24,11 @@ class WGAN_trainer:
 
         # these could be parsed in the options, but ok 
         self.n_critic=self._options.n_critic
+        self.flip_iter=self._options.flip_iter
         self.batch_size=self._options.batch_size
         self.optimizer=self._options.optimizer
         self.alpha=self._options.alpha
+        self.gen_coeff=self._options.gen_coeff
         self.momentum=self._options.momentum
         self.c=self._options.clipping_value
         self.generator_iters=self._options.generator_iters
@@ -170,17 +172,23 @@ class WGAN_trainer:
         latent = get_infinite_batches(self.latent_loader)
 
         if self.optimizer == 'RMSprop':
-            optim_discriminator = torch.optim.RMSprop( self.D.parameters(), lr=self.alpha, momentum=self.momentum)
-            optim_generator     = torch.optim.RMSprop( self.G.parameters(), lr=self.alpha*2, momentum=self.momentum)
-            
+            optim_discriminator = torch.optim.RMSprop( self.D.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
+            optim_generator     = torch.optim.RMSprop( self.G.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
+            #scheduler_discriminator = MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            scheduler_generator = MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+        
         if self.optimizer == 'Adam':
             # Default values for (beta_1, beta2_)=(0.9, 0.999), paper WGAN-GP values (beta_1, beta_2)=(0, 0.9)
-            optim_discriminator = torch.optim.Adam( self.D.parameters(), lr=self.alpha, betas=(0.9, 0.999))  
-            optim_generator     = torch.optim.Adam( self.G.parameters(), lr=self.alpha, betas=(0.9, 0.999))
-            
+            optim_discriminator = torch.optim.Adam( self.D.parameters(), lr=self.alpha*self.gen_coeff, betas=(0.9, 0.999))  
+            optim_generator     = torch.optim.Adam( self.G.parameters(), lr=self.alpha*self.gen_coeff, betas=(0.9, 0.999))
+            #scheduler_discriminator = MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            scheduler_generator = MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+           
         if self.optimizer == 'SGD':
-            optim_discriminator = torch.optim.SGD( self.D.parameters(), lr=self.alpha, momentum=self.momentum)
-            optim_generator     = torch.optim.SGD( self.G.parameters(), lr=self.alpha, momentum=self.momentum)
+            optim_discriminator = torch.optim.SGD( self.D.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
+            optim_generator     = torch.optim.SGD( self.G.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
+            #scheduler_discriminator = MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            scheduler_generator = MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
 
         values_g_loss_data     =[]
         values_d_loss_fake_data=[]
@@ -201,8 +209,14 @@ class WGAN_trainer:
         
         for g_iter in range(self.generator_iters):
                 
-            if not g_iter%100000 and g_iter!=0:
-                self.n_critic+=1
+            if not g_iter%self.flip_iter and g_iter!=0:
+                flip=True
+                if flip:
+                    self.n_critic-=1
+                    flip=False
+                else:
+                    self.n_critic+=1
+                    flip=True
             for p in self.D.parameters():
                 p.requires_grad=True
             for t in range(self.n_critic):
@@ -250,6 +264,7 @@ class WGAN_trainer:
             loss_b=-torch.mean(self.D(self.G(fake_data))) # because the gradient then goes with a minus
             loss_b.backward()
             optim_generator.step()
+            scheduler_generator.step()
             print(f'Generator iteration: {g_iter}/{self.generator_iters}, g_loss: {loss_b.data.cpu()}')
 
             # to plot 
@@ -523,9 +538,11 @@ if __name__=="__main__":
     parser.add_option("--trainingLabel",           dest="trainingLabel",  type="string", default='ttbartraining', help="Label where store to/read from the models");
     parser.add_option("--generator_iters",           dest="generator_iters", type="int", default=40000, help="Number of generator iterations");
     parser.add_option("--n_critic",           dest="n_critic", type="int", default=5, help="Number of iterations of the critic per generator iteration");
+    parser.add_option("--flip_iter",           dest="flip_iter", type="int", default=100000, help="Number of iterations to add or substract 1 to n_critic");
     parser.add_option("--batch_size",           dest="batch_size", type="int", default=64, help="Mini-batch size");
     parser.add_option("--optimizer",           dest="optimizer", type="string", default="RMSprop", help="Optimizer to use, RMSprop, Adam or SGD");
     parser.add_option("--alpha",           dest="alpha", type="float", default=0.00005, help="Learning rate");
+    parser.add_option("--gen_coeff",           dest="gen_coeff", type="float", default=2, help="Coeff to multiply by generator learning rate and momentum");
     parser.add_option("--momentum",           dest="momentum", type="float", default=0, help="Momentum");
     parser.add_option("--constraint",           dest="constraint",  type="string", default="clipping", help="Lipschitz constraint, use clipping weights or gradient penalty");
     parser.add_option("--penalty_coeff",           dest="penalty_coeff",  type="float", default=10.0, help="Gradient penalty coefficient");
