@@ -12,20 +12,17 @@ class DenseNNgenerator(torch.nn.Module):
         super().__init__()
         self.main_module = nn.Sequential(
             
-            nn.Linear((channels+random_noise), 100),
-            nn.BatchNorm1d(num_features=100),
+            nn.Linear((channels+random_noise), 300),
             nn.ReLU(True),
             
-            nn.Linear( 100, 200),
-            nn.BatchNorm1d(num_features=200),
+            nn.Linear( 300, 160),
             nn.ReLU(True),
             
-            nn.Linear(200, 100),
-            nn.BatchNorm1d(num_features=100),
+            nn.Linear(160, 80),
             nn.ReLU(True),
+
+            nn.Linear(80, channels)
           
-            nn.Linear(100, channels),
-            
         )
 
     def forward(self, x):
@@ -37,17 +34,15 @@ class DenseNNdiscriminator(torch.nn.Module):
         super().__init__()
         self.main_module = nn.Sequential(
             
-            nn.Linear( channels, 100),
-           # nn.BatchNorm1d(num_features=100),
+            nn.Linear( channels, 80),
+           # nn.BatchNorm1d(num_features=40),
             nn.ReLU(True),
-              
-            nn.Linear(100, 200),
-            nn.ReLU(True),
-          
-            nn.Linear(200, 100),
-            nn.ReLU(True),  
             
-            nn.Linear(100,1)
+            nn.Linear(80,50),
+           # nn.BatchNorm1d(num_features=20),
+            nn.ReLU(True),
+            
+            nn.Linear(50,1)
         )
         self.output = nn.Tanh()
 
@@ -62,8 +57,8 @@ class ttbarGAN():
 
 
     def __init__(self, lat_space):
-        channels = 3 # canales de salida de los datos, cuantas variables obtener
-        random_noise = 15 # canales de ruido aleatorio que meter
+        channels = 18 # canales de salida de los datos, cuantas variables obtener
+        random_noise = 180 # canales de ruido aleatorio que meter
         self.G=DenseNNgenerator(channels=channels, random_noise=random_noise)
         self.D=DenseNNdiscriminator(channels=channels)
         '''
@@ -81,4 +76,4 @@ class ttbarGAN():
         
         if lat_space == "uniform":
             
-            self.latent_space_generator = lambda batch_size : torch.rand(batch_size, random_noise)       
+            self.latent_space_generator = lambda batch_size : torch.rand(batch_size, random_noise)  
