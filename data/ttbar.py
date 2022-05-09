@@ -173,7 +173,7 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
         # aproximación, vamos a usar solo philep1, etalep1 y ptlep1 de las 34 posibles variables 
         # del dataframe
     
-
+'''
     # if variables need preprocess or not
     if process:
         processed_data = preProcess(data)
@@ -191,6 +191,26 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
         if compare:
             #return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
             return data[[var for var in data.columns if var.find('nu') == -1 and var.find('mMET') == -1 and var.find('etaMET') == -1]][int(round(data.shape[0]/2)):]
+ '''       
+
+        # if variables need preprocess or not
+    if process:
+        processed_data = preProcess(data)
+        # workaround due to in real life we dont have nu data neither mMET and etaMET
+        if pass_df:
+            return [var for var in processed_data.columns if var.find('nu') == -1 and var.find('m') == -1 and var.find('MET') == -1]
+        # MC original dataset and bias dataset are split in 2 disjoint sets each one, it depends on their purpose
+        if fileType=='train' or generate:
+            # in the reshape (-1,3): -1 stands for the dataset size, keep it, 3 satands for the variables (columns) selected 
+            return torch.reshape(torch.tensor(processed_data[:int(round(data.shape[0]/2))].values), (-1,12)) 
+
+        if fileType=='latent':
+            return torch.reshape(torch.tensor(processed_data[int(round(data.shape[0]/2)):].values), (-1,12))
+
+        if compare:
+            #return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
+            return data[[var for var in data.columns if var.find('nu') == -1 and var.find('MET') == -1 and var.find('m') == -1]][int(round(data.shape[0]/2)):]
+ 
         
     if not process:
 
@@ -214,7 +234,7 @@ def preProcess(data):
         py = data[''.join(('pt', var))]*np.sin(data[''.join(('phi', var))])
         if var != 'MET':
             pz = data[''.join(('pt', var))]*np.sinh(data[''.join(('eta', var))]) 
-        
+        '''
         if newData is None:
             newData=pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz, ''.join(('m', var)): data[''.join(('m', var))]})
             continue
@@ -222,6 +242,14 @@ def preProcess(data):
             newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz, ''.join(('m', var)): data[''.join(('m', var))]})), axis=1)
         if newData is not None and var == 'MET':
             newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py})), axis=1)
+        '''
+        if newData is None:
+            newData=pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz})
+            continue
+        if newData is not None and var != 'MET':
+            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz})), axis=1)
+        if newData is not None and var == 'MET':
+            pass
         
     return newData
     
