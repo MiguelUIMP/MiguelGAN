@@ -209,7 +209,7 @@ class WGAN_trainer:
 
         
         for g_iter in range(self.generator_iters):
-                
+            '''    
             if not g_iter%self.flip_iter and g_iter!=0:
                 flip=True
                 if flip:
@@ -218,6 +218,7 @@ class WGAN_trainer:
                 else:
                     self.n_critic+=1
                     flip=True
+            '''        
             for p in self.D.parameters():
                 p.requires_grad=True
             for t in range(self.n_critic):
@@ -479,7 +480,7 @@ class WGAN_trainer:
                                     'size': 11,
                                     }
                             out_b=round(hist_range_sam[0], 2)
-                            plt.text(0.60, 0.85, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
+                            plt.text(0.60, 0.80, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
                         if hist_range_sam[1]>hist_range_com[1]:
                             font = {'family': 'serif',
                                     'color':  'darkred',
