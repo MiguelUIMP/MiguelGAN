@@ -59,7 +59,7 @@ class ttbarGAN():
 
 
     def __init__(self, lat_space):
-        channels = 18 # canales de salida de los datos, cuantas variables obtener
+        channels = 12 # canales de salida de los datos, cuantas variables obtener
         random_noise = 100 # canales de ruido aleatorio que meter
         self.G=DenseNNgenerator(channels=channels, random_noise=random_noise)
         self.D=DenseNNdiscriminator(channels=channels)
