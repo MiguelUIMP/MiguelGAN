@@ -362,7 +362,7 @@ class WGAN_trainer:
         latent_data = read_root_files([self.latent_path], generate=True) 
         samples=[]
         for _ in range(number_of_samples):
-            z=self.get_torch_variable( torch.cat( (self.generate_latent_space(1), torch.reshape(latent_data[randint(low=0, high=latent_data.shape[0]), :], (-1,18))), dim=1 ) )
+            z=self.get_torch_variable( torch.cat( (self.generate_latent_space(1), torch.reshape(latent_data[randint(low=0, high=latent_data.shape[0]), :], (-1,12))), dim=1 ) )
             self.G.eval()
             sample=self.G(z).data.cpu()
             samples.append( sample ) 
