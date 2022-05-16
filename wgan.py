@@ -268,11 +268,13 @@ class WGAN_trainer:
 
         model_lab = self.save_model(label="FINAL")
 
-        fig, ax = plt.subplots()
-        plot3=ax.plot( range(len(values_d_loss_real_data)),values_d_loss_real_data , label='loss critic real data')
-        plot2=ax.plot( range(len(values_d_loss_fake_data)),values_d_loss_fake_data , label='loss critic fake data')
-        plot1=ax.plot( range(len(values_g_loss_data     )),values_g_loss_data      , label='loss generator')
+        fig, ax = plt.subplots(figsize=(9.33, 7))
+        plot3=ax.plot( range(len(values_d_loss_real_data)),values_d_loss_real_data , label='loss critic real data', color='green', alpha=0.7, linestyle='solid', marker='')
+        plot2=ax.plot( range(len(values_d_loss_fake_data)),values_d_loss_fake_data , label='loss critic fake data', color='blue', alpha=0.7, linestyle='solid', marker='')
+        plot1=ax.plot( range(len(values_g_loss_data     )),values_g_loss_data      , label='loss generator', color='red', alpha=0.7, linestyle='solid', marker='')
         plt.legend(handles=[plot3[0],plot2[0],plot1[0]])
+        plt.xlabel("Iterations")
+        plt.ylabel("Loss")
         plt.savefig(f'./TrainedGANs/LossFunction_{model_lab}.png')
         ax.clear()
         plt.close()
@@ -445,14 +447,14 @@ class WGAN_trainer:
 
                         plt.figure(figsize=(11,8));
                         hist_range_com = (compare_df.min()[var], compare_df.max()[var])
-                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), alpha=0.5, label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}');
+                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='cyan', alpha=0.5);
                         hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
-                        plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=(plot_t=="Density"), alpha=0.5, label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}');
+                        plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='magenta', alpha=0.5);
                         if hist_range_sam[0]<hist_range_com[0]:
                             font = {'family': 'serif',
                                     'color':  'darkred',
                                     'weight': 'normal',
-                                    'size': 11,
+                                    'size': 10,
                                     }
                             out_b=round(hist_range_sam[0], 2)
                             plt.text(0.60, 0.85, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
@@ -460,7 +462,7 @@ class WGAN_trainer:
                             font = {'family': 'serif',
                                     'color':  'darkred',
                                     'weight': 'normal',
-                                    'size': 11,
+                                    'size': 10,
                                     }
                             out_b=round(hist_range_sam[1], 2)
                             plt.text(0.60, 0.85, f'sample out of upper bound up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
@@ -469,7 +471,6 @@ class WGAN_trainer:
                         plt.xlabel(var)
                         plt.ylabel(plot_t)
                         plt.yscale(scale_t)
-                        plt.title(f'{var} for generated and simulated MC samples')
                         plt.legend(loc='upper right')
                         plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
                         print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
