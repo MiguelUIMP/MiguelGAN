@@ -297,7 +297,7 @@ class WGAN_trainer:
         
         model_lab = self.save_model(label="FINAL")
 
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(figsize=(9.33, 7))
         plot3=ax.plot( range(len(values_d_loss_real_data)),values_d_loss_real_data , label='loss critic real data', color='green', alpha=0.7, linestyle='solid', marker='')
         plot2=ax.plot( range(len(values_d_loss_fake_data)),values_d_loss_fake_data , label='loss critic fake data', color='blue', alpha=0.7, linestyle='solid', marker='')
         plot1=ax.plot( range(len(values_g_loss_data     )),values_g_loss_data      , label='loss generator', color='red', alpha=0.7, linestyle='solid', marker='')
@@ -480,7 +480,7 @@ class WGAN_trainer:
          
                     for var in samples_df:
 
-                        plt.figure(figsize=(11,8));
+                        plt.figure(figsize=(9.33, 7));
                         hist_range_com = (compare_df.min()[var], compare_df.max()[var])
                         plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), alpha=0.5, label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='cyan', alpha=0.5);
                         hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
