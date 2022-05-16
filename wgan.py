@@ -421,7 +421,7 @@ class WGAN_trainer:
         '''        
                 
                 
-    def plot_samples(self, plot_options, num_model, label="FINAL", process=True):
+    def plot_samples(self, plot_options, num_model, label="FINAL", process=False):
         
         print("Creating plots...")
         # load last model if not model number is passed
@@ -444,7 +444,7 @@ class WGAN_trainer:
             samples_df = self.postProcess(samples_tensor, var_to_use)
         if not process:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
-            samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
+            samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pzlep1"], dtype="float64")
             
         samples_mean = round(samples_df.mean(),2)
         samples_std = round(samples_df.std(),2)
@@ -482,9 +482,9 @@ class WGAN_trainer:
 
                         plt.figure(figsize=(9.33, 7));
                         hist_range_com = (compare_df.min()[var], compare_df.max()[var])
-                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='cyan', alpha=0.5);
+                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
                         hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
-                        plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='magenta', alpha=0.5);
+                        plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
                         if hist_range_sam[0]<hist_range_com[0]:
                             font = {'family': 'serif',
                                     'color':  'darkred',
@@ -506,7 +506,6 @@ class WGAN_trainer:
                         plt.xlabel(var)
                         plt.ylabel(plot_t)
                         plt.yscale(scale_t)
-                        plt.title(f'{var} for generated and simulated MC samples')
                         plt.legend(loc='upper right')
                         plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
                         print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
