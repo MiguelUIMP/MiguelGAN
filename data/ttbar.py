@@ -53,7 +53,7 @@ class ttbar_TrainGen(data.Dataset):
        # from six.moves import urllib
         import shutil
 
-        transformed_file = "/home/ubuntu/addSystematics/ptLepton20/ttbar-Madgraph-MLM.root"
+        transformed_file = "/home/ubuntu/addSystematics/ptLepton05/ttbar-Madgraph-MLM.root"
         if self._check_exists():
             return
         
@@ -154,7 +154,7 @@ class ttbar_LatentGen(data.Dataset):
         
 
 
-def read_root_files(paths, fileType=None, generate=False, compare=False, process=True, pass_df=False):
+def read_root_files(paths, fileType=None, generate=False, compare=False, process=False, pass_df=False):
     '''
     Read root files to return torch.tensor to latent space, train, generate samples, or pd.Dataframe to compare final results
     '''
@@ -215,13 +215,13 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
     if not process:
 
         if fileType=='train' or generate:
-            return torch.reshape(torch.tensor(data[var_to_use][:int(round(data.shape[0]/2))].values), (-1,18))
+            return torch.reshape(torch.tensor(data["ptlep1"][:int(round(data.shape[0]/2))].values), (-1,1))
 
         if fileType=='latent':
-            return torch.reshape(torch.tensor(data[var_to_use][int(round(data.shape[0]/2)):].values), (-1,18))
+            return torch.reshape(torch.tensor(data["ptlep1"][int(round(data.shape[0]/2)):].values), (-1,1))
 
         if compare:
-            return data[var_to_use][int(round(data.shape[0]/2)):]
+            return data["ptlep1"][int(round(data.shape[0]/2)):]
             
 def preProcess(data):
     '''
