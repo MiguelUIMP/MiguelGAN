@@ -489,7 +489,7 @@ class WGAN_trainer:
                             font = {'family': 'serif',
                                     'color':  'darkred',
                                     'weight': 'normal',
-                                    'size': 11,
+                                    'size': 10,
                                     }
                             out_b=round(hist_range_sam[0], 2)
                             plt.text(0.60, 0.80, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
@@ -497,7 +497,7 @@ class WGAN_trainer:
                             font = {'family': 'serif',
                                     'color':  'darkred',
                                     'weight': 'normal',
-                                    'size': 11,
+                                    'size': 10,
                                     }
                             out_b=round(hist_range_sam[1], 2)
                             plt.text(0.60, 0.85, f'sample out of upper bound up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
