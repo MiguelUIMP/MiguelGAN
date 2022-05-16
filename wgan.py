@@ -235,7 +235,8 @@ class WGAN_trainer:
                     continue
                 real_data=self.get_torch_variable(images)
                 fake_data=self.get_torch_variable( torch.cat( (self.generate_latent_space(self.batch_size), images_lat), dim=1 ) ) # TODO: the latent space is hardcoded, should be an input (use a lambda function in the models.)
-
+                print("real data:", real_data.shape)
+                print("fake data:", fake_data.shape)
                 if self.constraint == "clipping":
                     loss_a= -torch.mean(self.D(real_data)) + torch.mean(self.D(self.G(fake_data)))
                     loss_a.backward() # compute gradients 
