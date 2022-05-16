@@ -444,7 +444,7 @@ class WGAN_trainer:
             samples_df = self.postProcess(samples_tensor, var_to_use)
         if not process:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
-            samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pzlep1"], dtype="float64")
+            samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["ptlep1"], dtype="float64")
             
         samples_mean = round(samples_df.mean(),2)
         samples_std = round(samples_df.std(),2)
