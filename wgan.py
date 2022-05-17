@@ -447,8 +447,8 @@ class WGAN_trainer:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
             samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["ptlep1"], dtype="float64")
             
-        samples_mean = round(samples_df.values.mean(),2)
-        samples_std = round(samples_df.values.std(),2)
+        samples_mean = round(float(samples_df.values.mean()),2)
+        samples_std = round(float(samples_df.values.std()),2)
         
         data_type=[]
         plot_type=[]
@@ -475,7 +475,7 @@ class WGAN_trainer:
                 
             
             compare_mean = round(float(compare_df.values.mean()), 2)
-            compare_std = round(compare_df.values.std(), 2)
+            compare_std = round(float(compare_df.values.std()), 2)
 
             for plot_t in plot_type:
                 for scale_t in scale_type:
