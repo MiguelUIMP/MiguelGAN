@@ -199,7 +199,7 @@ class WGAN_trainer:
         values_d_loss_fake_data=[]
         values_d_loss_real_data=[]
         
-        def early_stopping(d_r, d_f, g, g_it, bound=0.001):
+        def early_stopping(d_r, d_f, g, g_it, bound=0.0001):
             val_d_r = np.asarray([d_r[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
             val_d_f = np.asarray([d_f[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
             val_g = np.asarray([g[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
@@ -218,11 +218,11 @@ class WGAN_trainer:
             if not g_iter%self.flip_iter and g_iter!=0:
                 
                 if flip:
-                    self.n_critic-=1
+                    #self.n_critic-=1
                    # self.c=self.c*0.5
                     flip=False
                 else:
-                    self.n_critic+=1
+                    #self.n_critic+=1
                     flip=True
                     
             for p in self.D.parameters():
@@ -235,8 +235,8 @@ class WGAN_trainer:
                     continue
                 real_data=self.get_torch_variable(images)
                 fake_data=self.get_torch_variable( torch.cat( (self.generate_latent_space(self.batch_size), images_lat), dim=1 ) ) # TODO: the latent space is hardcoded, should be an input (use a lambda function in the models.)
-                print("real data:", real_data.shape)
-                print("fake data:", fake_data.shape)
+                #print("real data:", real_data.shape)
+                #print("fake data:", fake_data.shape)
                 if self.constraint == "clipping":
                     loss_a= -torch.mean(self.D(real_data)) + torch.mean(self.D(self.G(fake_data)))
                     loss_a.backward() # compute gradients 
@@ -447,8 +447,8 @@ class WGAN_trainer:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
             samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["ptlep1"], dtype="float64")
             
-        samples_mean = round(samples_df.mean(),2)
-        samples_std = round(samples_df.std(),2)
+        samples_mean = round(samples_df.values.mean(),2)
+        samples_std = round(samples_df.values.std(),2)
         
         data_type=[]
         plot_type=[]
@@ -473,8 +473,9 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_mean = round(compare_df.mean(), 2)
-            compare_std = round(compare_df.std(), 2)
+            
+            compare_mean = round(float(compare_df.values.mean()), 2)
+            compare_std = round(compare_df.values.std(), 2)
 
             for plot_t in plot_type:
                 for scale_t in scale_type:
@@ -482,10 +483,10 @@ class WGAN_trainer:
                     for var in samples_df:
 
                         plt.figure(figsize=(9.33, 7));
-                        hist_range_com = (compare_df.min()[var], compare_df.max()[var])
-                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
-                        hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
-                        plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
+                        hist_range_com = (compare_df.values.min(), compare_df.values.max())
+                        plt.hist(compare_df.values , range=hist_range_com, bins=200, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean} std: {compare_std}', color='blue', alpha=0.5);
+                        hist_range_sam = (samples_df.values.min(), samples_df.values.max())
+                        plt.hist(samples_df.values, range=hist_range_sam, bins=200, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean} std: {samples_std}', color='red', alpha=0.5);
                         if hist_range_sam[0]<hist_range_com[0]:
                             font = {'family': 'serif',
                                     'color':  'darkred',
