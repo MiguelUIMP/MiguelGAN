@@ -53,7 +53,7 @@ class ttbar_TrainGen(data.Dataset):
        # from six.moves import urllib
         import shutil
 
-        transformed_file = "/home/ubuntu/addSystematics/ptLepton05/ttbar-Madgraph-MLM.root"
+        transformed_file = "/home/ubuntu/addSystematics/ptLepton10/ttbar-Madgraph-MLM.root"
         if self._check_exists():
             return
         
