@@ -21,12 +21,15 @@ class WGAN_trainer:
         self.G                     = model_server.G
         self.D                     = model_server.D
         self.generate_latent_space = model_server.latent_space_generator
-
+        
         # these could be parsed in the options, but ok 
         self.n_critic=self._options.n_critic
+        self.flip_iter=self._options.flip_iter
         self.batch_size=self._options.batch_size
         self.optimizer=self._options.optimizer
         self.alpha=self._options.alpha
+        self.alpha_end_factor=self._options.alpha_end_factor
+        self.gen_coeff=self._options.gen_coeff
         self.momentum=self._options.momentum
         self.c=self._options.clipping_value
         self.generator_iters=self._options.generator_iters
@@ -411,8 +414,8 @@ class WGAN_trainer:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
             samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
             
-        samples_mean = round(samples_df.mean(),2)
-        samples_std = round(samples_df.std(),2)
+        samples_mean = round(float(samples_df.mean()),2)
+        samples_std = round(float(samples_df.std()),2)
         
         data_type=[]
         plot_type=[]
@@ -437,8 +440,8 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_mean = np.round(round(compare_df.mean(), 2), 2)
-            compare_std = np.round(round(compare_df.std(), 2), 2)
+            compare_mean = np.round(float(compare_df.mean()), 2)
+            compare_std = np.round(float(compare_df.std()), 2)
 
             for plot_t in plot_type:
                 for scale_t in scale_type:
@@ -457,7 +460,7 @@ class WGAN_trainer:
                                     'size': 10,
                                     }
                             out_b=round(hist_range_sam[0], 2)
-                            plt.text(0.60, 0.85, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
+                            plt.text(0.60, 0.8, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
                         if hist_range_sam[1]>hist_range_com[1]:
                             font = {'family': 'serif',
                                     'color':  'darkred',
@@ -493,7 +496,7 @@ if __name__=="__main__":
 
     from optparse import OptionParser
     parser = OptionParser()
-
+    
     parser.add_option("--no-cuda",           dest="cuda", action='store_false', default=True, help="Do not try to use cuda. Otherwise it will try to use cuda only if its available");
     parser.add_option("--cuda_index",           dest="cuda_index", type="int", default=0, help="Index of the device to use");
     parser.add_option("--experiment",           dest="experiment", type="string", default="TTbar", help="experiment to load models");
@@ -503,9 +506,12 @@ if __name__=="__main__":
     parser.add_option("--trainingLabel",           dest="trainingLabel",  type="string", default='ttbartraining', help="Label where store to/read from the models");
     parser.add_option("--generator_iters",           dest="generator_iters", type="int", default=40000, help="Number of generator iterations");
     parser.add_option("--n_critic",           dest="n_critic", type="int", default=5, help="Number of iterations of the critic per generator iteration");
+    parser.add_option("--flip_iter",           dest="flip_iter", type="int", default=100000, help="Number of iterations to add or substract 1 to n_critic");
     parser.add_option("--batch_size",           dest="batch_size", type="int", default=64, help="Mini-batch size");
     parser.add_option("--optimizer",           dest="optimizer", type="string", default="RMSprop", help="Optimizer to use, RMSprop, Adam or SGD");
     parser.add_option("--alpha",           dest="alpha", type="float", default=0.00005, help="Learning rate");
+    parser.add_option("--alpha_end_factor",           dest="alpha_end_factor", type="float", default=0.0001, help="End learning rate factor to multiply lr by, if <1 lr decreases");
+    parser.add_option("--gen_coeff",           dest="gen_coeff", type="float", default=2, help="Coeff to multiply by generator learning rate and momentum");
     parser.add_option("--momentum",           dest="momentum", type="float", default=0, help="Momentum");
     parser.add_option("--constraint",           dest="constraint",  type="string", default="clipping", help="Lipschitz constraint, use clipping weights or gradient penalty");
     parser.add_option("--penalty_coeff",           dest="penalty_coeff",  type="float", default=10.0, help="Gradient penalty coefficient");
