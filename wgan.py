@@ -1,5 +1,6 @@
 import torch
 from torch.autograd import Variable
+from torch import optim
 import uproot
 import os 
 import numpy as np
@@ -296,16 +297,16 @@ class WGAN_trainer:
         
         model_lab = self.save_model(label="FINAL")
 
-        fig, ax = plt.subplots()
-        plot3=ax.plot( range(len(values_d_loss_real_data)),values_d_loss_real_data , label='loss critic real data')
-        plot2=ax.plot( range(len(values_d_loss_fake_data)),values_d_loss_fake_data , label='loss critic fake data')
-        plot1=ax.plot( range(len(values_g_loss_data     )),values_g_loss_data      , label='loss generator')
+        fig, ax = plt.subplots(figsize=(9.33, 7))
+        plot3=ax.plot( range(len(values_d_loss_real_data)),values_d_loss_real_data , label='loss critic real data', color='green', alpha=0.7, linestyle='solid', marker='')
+        plot2=ax.plot( range(len(values_d_loss_fake_data)),values_d_loss_fake_data , label='loss critic fake data', color='blue', alpha=0.7, linestyle='solid', marker='')
+        plot1=ax.plot( range(len(values_g_loss_data     )),values_g_loss_data      , label='loss generator', color='red', alpha=0.7, linestyle='solid', marker='')
         plt.legend(handles=[plot3[0],plot2[0],plot1[0]])
         plt.xlabel("Iterations")
         plt.ylabel("Loss")
         plt.savefig(f'./TrainedGANs/LossFunction_{model_lab}.png')
         ax.clear()
-        plt.close()        
+        plt.close()
 
     def gradient_penalty(self, real_imgs, fake_imgs, penalty_coeff=10):
         #self.G.eval()
@@ -438,8 +439,8 @@ class WGAN_trainer:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
             samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
             
-        samples_mean = round(float(samples_df.mean()),2)
-        samples_std = round(float(samples_df.std()),2)
+        samples_mean = np.round(samples_df.mean(),2)
+        samples_std = np.round(samples_df.std(),2)
         
         data_type=[]
         plot_type=[]
@@ -464,15 +465,15 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_mean = np.round(float(compare_df.mean()), 2)
-            compare_std = np.round(float(compare_df.std()), 2)
+            compare_mean = np.round(compare_df.mean(), 2)
+            compare_std = np.round(compare_df.std(), 2)
 
             for plot_t in plot_type:
                 for scale_t in scale_type:
          
                     for var in samples_df:
 
-                        plt.figure(figsize=(11,8));
+                        plt.figure(figsize=(9.33, 7));                       
                         hist_range_com = (compare_df.min()[var], compare_df.max()[var])
                         plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
                         hist_range_sam = (samples_df.min()[var], samples_df.max()[var])

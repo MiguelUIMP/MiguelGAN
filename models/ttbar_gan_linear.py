@@ -15,13 +15,17 @@ class DenseNNgenerator(torch.nn.Module):
             nn.Linear((channels+random_noise), 100),
             #nn.BatchNorm1d(num_features=100),
             nn.ReLU(True),
+            #nn.Dropout(p=0.5),
             
             nn.Linear( 100, 60),
-           # nn.BatchNorm1d(num_features=60),
+            #nn.BatchNorm1d(num_features=60),
             nn.ReLU(True),
+            #nn.Dropout(p=0.5),
             
             nn.Linear(60, 40),
+            #nn.BatchNorm1d(num_features=40),
             nn.ReLU(True),
+            #nn.Dropout(p=0.5),
 
             nn.Linear( 40, channels)
           
