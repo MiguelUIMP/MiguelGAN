@@ -173,23 +173,32 @@ class WGAN_trainer:
         latent = get_infinite_batches(self.latent_loader)
 
         if self.optimizer == 'RMSprop':
-            optim_discriminator = torch.optim.RMSprop( self.D.parameters(), lr=self.alpha, momentum=self.momentum)
-            optim_generator     = torch.optim.RMSprop( self.G.parameters(), lr=self.alpha, momentum=self.momentum)
+            optim_discriminator = optim.RMSprop( self.D.parameters(), lr=self.alpha, momentum=self.momentum)
+            optim_generator     = optim.RMSprop( self.G.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
+            #scheduler_discriminator = optim.lr_scheduler.MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            #scheduler_generator = optim.lr_scheduler.MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.5)
+            #scheduler_generator = optim.lr_scheduler.ExponentialLR(optim_generator, gamma=0.99965)
+            scheduler_generator =  optim.lr_scheduler.LinearLR(optim_generator, start_factor=1, end_factor=self.alpha_end_factor, total_iters=self.generator_iters)
+            scheduler_discriminator =  optim.lr_scheduler.LinearLR(optim_discriminator, start_factor=1, end_factor=self.alpha_end_factor, total_iters=self.generator_iters)
             
         if self.optimizer == 'Adam':
             # Default values for (beta_1, beta2_)=(0.9, 0.999), paper WGAN-GP values (beta_1, beta_2)=(0, 0.9)
-            optim_discriminator = torch.optim.Adam( self.D.parameters(), lr=self.alpha, betas=(0.9, 0.999))  
-            optim_generator     = torch.optim.Adam( self.G.parameters(), lr=self.alpha, betas=(0.9, 0.999))
-            
+            optim_discriminator = optim.Adam( self.D.parameters(), lr=self.alpha, betas=(0.9, 0.999))  
+            optim_generator     = optim.Adam( self.G.parameters(), lr=self.alpha*self.gen_coeff, betas=(0.9, 0.999))
+            #scheduler_discriminator = optim.lr_scheduler.MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            scheduler_generator = optim.lr_scheduler.MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+           
         if self.optimizer == 'SGD':
-            optim_discriminator = torch.optim.SGD( self.D.parameters(), lr=self.alpha, momentum=self.momentum)
-            optim_generator     = torch.optim.SGD( self.G.parameters(), lr=self.alpha, momentum=self.momentum)
+            optim_discriminator = optim.SGD( self.D.parameters(), lr=self.alpha, momentum=self.momentum)
+            optim_generator     = optim.SGD( self.G.parameters(), lr=self.alpha*self.gen_coeff, momentum=self.momentum*self.gen_coeff)
+            #scheduler_discriminator = optim.lr_scheduler.MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            scheduler_generator = optim.lr_scheduler.MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
 
         values_g_loss_data     =[]
         values_d_loss_fake_data=[]
         values_d_loss_real_data=[]
         
-        def early_stopping(d_r, d_f, g, g_it, bound=0.0001):
+        def early_stopping(d_r, d_f, g, g_it, bound=0.001):
             val_d_r = np.asarray([d_r[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
             val_d_f = np.asarray([d_f[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
             val_g = np.asarray([g[ind] for ind in [g_it-4000, g_it-3000, g_it-2000, g_it-1000, g_it]], dtype="float32")
@@ -201,9 +210,20 @@ class WGAN_trainer:
             lower_g = np.mean(val_g) - bound
             return ( (all(val_d_r<upper_d_r) and all(val_d_r>lower_d_r)) or (all(val_d_f<upper_d_f) and all(val_d_f>lower_d_f)) or (all(val_g<upper_g) and all(val_g>lower_g)) )
 
-        
+        flip=True
+
         for g_iter in range(self.generator_iters):
                 
+            if not g_iter%self.flip_iter and g_iter!=0:
+                
+                if flip:
+                    self.n_critic-=1
+                   # self.c=self.c*0.5
+                    flip=False
+                else:
+                    self.n_critic+=1
+                    flip=True
+                    
             for p in self.D.parameters():
                 p.requires_grad=True
             for t in range(self.n_critic):
@@ -236,10 +256,10 @@ class WGAN_trainer:
                 loss_a_real_data=-torch.mean(self.D(real_data)).data.cpu()
                 loss_a_fake_data=torch.mean(self.D(self.G(fake_data))).data.cpu()
 
-                print(f'  Discriminator iteration: {t}/{self.n_critic}, loss_fake: {loss_a_fake_data}, loss_real: {loss_a_real_data}')
+                print(f'  Discriminator iteration: {t+1}/{self.n_critic}, loss_fake: {round(loss_a_fake_data.item(), 6)}, loss_real: {round(loss_a_real_data.item(),6)}')
             
 
-            # to avoid computation
+            # to avoid pytorch track D parameters and computation while G updates
             for p in self.D.parameters():
                 p.requires_grad = False  
             
@@ -248,10 +268,14 @@ class WGAN_trainer:
             while (images_lat.size()[0] != self.batch_size):
                 images_lat=latent.__next__()
             fake_data=self.get_torch_variable( torch.cat( (self.generate_latent_space(self.batch_size), images_lat), dim=1 ) ) # TODO: the latent space is hardcoded, should be an input (use a lambda function in the models.)
-            loss_b=-torch.mean(self.D(self.G(fake_data))) # because the gradient then goes with a minus
+            loss_b= -torch.mean(self.D(self.G(fake_data))) # because the gradient then goes with a minus
             loss_b.backward()
             optim_generator.step()
-            print(f'Generator iteration: {g_iter}/{self.generator_iters}, g_loss: {loss_b.data.cpu()}')
+            # update both learning rates (generator and discriminator)
+            scheduler_generator.step()
+            scheduler_discriminator.step()
+
+            print(f'Generator iteration: {g_iter+1}/{self.generator_iters}, g_loss: {round(loss_b.data.cpu().item(),6)}')
 
             # to plot 
             values_g_loss_data     .append(loss_b.data.cpu() )
@@ -268,20 +292,20 @@ class WGAN_trainer:
                     break
                     
                 
-
+        print(optim_generator.param_groups[0]['lr'])
+        
         model_lab = self.save_model(label="FINAL")
 
-        fig, ax = plt.subplots(figsize=(9.33, 7))
-        plot3=ax.plot( range(len(values_d_loss_real_data)),values_d_loss_real_data , label='loss critic real data', color='green', alpha=0.7, linestyle='solid', marker='')
-        plot2=ax.plot( range(len(values_d_loss_fake_data)),values_d_loss_fake_data , label='loss critic fake data', color='blue', alpha=0.7, linestyle='solid', marker='')
-        plot1=ax.plot( range(len(values_g_loss_data     )),values_g_loss_data      , label='loss generator', color='red', alpha=0.7, linestyle='solid', marker='')
+        fig, ax = plt.subplots()
+        plot3=ax.plot( range(len(values_d_loss_real_data)),values_d_loss_real_data , label='loss critic real data')
+        plot2=ax.plot( range(len(values_d_loss_fake_data)),values_d_loss_fake_data , label='loss critic fake data')
+        plot1=ax.plot( range(len(values_g_loss_data     )),values_g_loss_data      , label='loss generator')
         plt.legend(handles=[plot3[0],plot2[0],plot1[0]])
         plt.xlabel("Iterations")
         plt.ylabel("Loss")
         plt.savefig(f'./TrainedGANs/LossFunction_{model_lab}.png')
         ax.clear()
-        plt.close()
-        
+        plt.close()        
 
     def gradient_penalty(self, real_imgs, fake_imgs, penalty_coeff=10):
         #self.G.eval()
