@@ -438,9 +438,10 @@ class WGAN_trainer:
         if not process:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
             samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
-            
-        samples_mean = round(float(samples_df.values.mean()),2)
-        samples_std = round(float(samples_df.values.std()),2)
+           
+        pd.options.display.float_format = '{:,.2f}'.format
+        samples_mean = samples_df.mean().round(2)
+        samples_std = samples_df.std().round(2)
         
         data_type=[]
         plot_type=[]
@@ -465,8 +466,8 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_mean = np.round(float(compare_df.values.mean()), 2)
-            compare_std = np.round(float(compare_df.values.std()), 2)
+            compare_mean = compare_df.mean().round(2)
+            compare_std = compare_df.std().round(2)
 
             for plot_t in plot_type:
                 for scale_t in scale_type:
@@ -475,7 +476,7 @@ class WGAN_trainer:
 
                         plt.figure(figsize=(9.33, 7));                       
                         hist_range_com = (compare_df.min()[var], compare_df.max()[var])
-                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
+                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {round(float(compare_mean[var]),2)} std: {round(float(compare_std[var]),2)}', color='blue', alpha=0.5);
                         hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
                         plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
                         if hist_range_sam[0]<hist_range_com[0]:
