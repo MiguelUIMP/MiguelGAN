@@ -439,8 +439,8 @@ class WGAN_trainer:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
             samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
             
-        samples_mean = np.round(samples_df.mean(),2)
-        samples_std = np.round(samples_df.std(),2)
+        samples_mean = round(float(samples_df.values.mean()),2)
+        samples_std = round(float(samples_df.values.std()),2)
         
         data_type=[]
         plot_type=[]
@@ -465,8 +465,8 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_mean = np.round(compare_df.mean(), 2)
-            compare_std = np.round(compare_df.std(), 2)
+            compare_mean = np.round(float(compare_df.values.mean()), 2)
+            compare_std = np.round(float(compare_df.values.std()), 2)
 
             for plot_t in plot_type:
                 for scale_t in scale_type:
