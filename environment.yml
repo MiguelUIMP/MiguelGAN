@@ -1,0 +1,15 @@
+name: pytorch_v1_cuda_10_2
+channels:
+  - conda-forge
+  - defaults
+  - pytorch
+dependencies:
+  - cudatoolkit=10.2
+  - torchaudio
+  - pytorch
+  - torchvision
+  - uproot
+  - pandas
+  - matplotlib
+  - uproot3-methods
+prefix: /work/sesanche/anaconda3/envs/pytorch_v1_cuda_10_2
