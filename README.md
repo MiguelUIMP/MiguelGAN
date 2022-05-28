@@ -16,7 +16,7 @@ The `environment.yml` file contains the packages needed to run the code with pyt
 ### Train a GAN with ttbar events with bias
 #### Execute the training (about 3h in cpu) in background and save the output to a test.txt file
 
-``` nohup python wgan.py --model ttbarGAN_exp --do_what train --generator_iters 800000 --n_critic 5 --flip_iter 1 --batch_size 128 --optimizer RMSprop --alpha 5e-5 --alpha_end_factor 0.0002 --gen_coeff 2 --momentum 8e-8 --constraint clipping --clipping_value 0.02 --latent_space gaussian > ./lep_bjets_B60_S20.txt &```
+``` nohup python wgan.py --model ttbarGAN_exp --do_what train --generator_iters 900000 --n_critic 5 --flip_iter 1 --batch_size 128 --optimizer RMSprop --alpha 5e-5 --alpha_end_factor 0.0001 --gen_coeff 2 --momentum 8e-8 --constraint clipping --clipping_value 0.02 --latent_space gaussian > ./lep_bjets_B60_S20ALL.txt &```
 
 ### Generate events from the trained GAN
 #### Ignore output file
