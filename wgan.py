@@ -479,30 +479,37 @@ class WGAN_trainer:
                 for scale_t in scale_type:
          
                     for var in samples_df:
-
+                        
+                        globalMin=min(compare_df.min()[var], samples_df.min()[var])
+                        globalMax=max(compare_df.max()[var], samples_df.max()[var])
+                        binSeq=None
+                        if var.find('pt')!=-1:
+                            binwidth=5
+                            binSeq=np.arange(0, globalMax+binwidth, binwidth)
+                        if var.find('phi')!=-1:
+                            binwidth=np.pi*2/300
+                            binSeq=np.arange(-np.pi, np.pi+binwidth, binwidth)
+                        if var.find('eta')!=-1:
+                            binwidth=np.pi*2/300
+                            concatInf = np.flip(-np.arange(binwidth, -globalMin+binwidth, binwidth))
+                            concatSup = np.arange(0, globalMax+binwidth, binwidth)
+                            binSeq=np.concatenate(concatInf, concatSup)                            
+                        if binSeq is None:
+                            raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
                         plt.figure(figsize=(9.33, 7));
-                        hist_range_com = (compare_df.min()[var], compare_df.max()[var])
-                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
-                        hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
-                        plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
-                        if hist_range_sam[0]<hist_range_com[0]:
+                        plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
+                        plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
+
+                        if var.find('pt')!=-1 and samples_df.min()[var] < 0:
                             font = {'family': 'serif',
                                     'color':  'darkred',
                                     'weight': 'normal',
                                     'size': 10,
                                     }
-                            out_b=round(hist_range_sam[0], 2)
-                            plt.text(0.60, 0.80, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
-                        if hist_range_sam[1]>hist_range_com[1]:
-                            font = {'family': 'serif',
-                                    'color':  'darkred',
-                                    'weight': 'normal',
-                                    'size': 10,
-                                    }
-                            out_b=round(hist_range_sam[1], 2)
-                            plt.text(0.60, 0.85, f'sample out of upper bound up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
+                            out_b=round(samples_df.min()[var], 2)
+                            plt.text(0.60, 0.85, f'Sample contains negative values up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
                        
-                        plt.xlim(hist_range_com)
+                        plt.xlim(binSeq)
                         plt.xlabel(var)
                         plt.ylabel(plot_t)
                         plt.yscale(scale_t)
