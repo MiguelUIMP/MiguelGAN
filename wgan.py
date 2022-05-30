@@ -497,8 +497,8 @@ class WGAN_trainer:
                         if binSeq is None:
                             raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
                         plt.figure(figsize=(9.33, 7));
-                        plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
-                        plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
+                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
+                        n_sample,_,_plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
 
                         if var.find('pt')!=-1 and samples_df.min()[var] < 0:
                             font = {'family': 'serif',
@@ -509,7 +509,7 @@ class WGAN_trainer:
                             out_b=round(samples_df.min()[var], 2)
                             plt.text(0.60, 0.85, f'Sample contains negative values up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
                        
-                        plt.xlim(binSeq)
+                        plt.xlim((binSeq[0], binSeq[-1]))
                         plt.xlabel(var)
                         plt.ylabel(plot_t)
                         plt.yscale(scale_t)
