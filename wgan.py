@@ -498,7 +498,7 @@ class WGAN_trainer:
                             binwidth=np.pi*2/300
                             concatInf = np.flip(-np.arange(binwidth, -globalMin+binwidth, binwidth))
                             concatSup = np.arange(0, globalMax+binwidth, binwidth)
-                            binSeq=np.concatenate(concatInf, concatSup)                            
+                            binSeq=np.concatenate((concatInf, concatSup))                            
                         if binSeq is None:
                             raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
                         plt.figure(figsize=(9.33, 7));
@@ -565,7 +565,7 @@ class WGAN_trainer:
                             binwidth=np.pi*2/300
                             concatInf = np.flip(-np.arange(binwidth, -globalMin+binwidth, binwidth))
                             concatSup = np.arange(0, globalMax+binwidth, binwidth)
-                            binSeq=np.concatenate(concatInf, concatSup)                            
+                            binSeq=np.concatenate((concatInf, concatSup))                            
                         if binSeq is None:
                             raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
                         plt.figure(figsize=(9.33, 7));
