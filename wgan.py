@@ -519,7 +519,8 @@ class WGAN_trainer:
                         plt.ylabel(plot_t)
                         plt.yscale(scale_t)
                         plt.legend(loc='upper right')
-                        plt.savefig(f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
+                        if 'saveFig' in plot_options:
+                            plt.savefig(f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
                         print(f'For plot {plot_t} with VARIABLE: {var}')
                         '''
                         samples_skew = round(skew(samples_df[var].to_numpy()),2)
@@ -587,7 +588,8 @@ class WGAN_trainer:
                         plt.ylabel(plot_t)
                         plt.yscale(scale_t)
                         plt.legend(loc='upper right')
-                        plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
+                        if 'saveFig' in plot_options:
+                            plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
                         print(f'Type of data {data_t} for plot {plot_t} with VARIABLE: {var}')
                         '''
                         samples_skew = round(skew(samples_df[var].to_numpy()),2)
