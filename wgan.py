@@ -13,6 +13,7 @@ import matplotlib.pyplot as plt
 plt.switch_backend('agg')
 from numpy.random import randint
 import pandas as pd
+from scipy.stats import kurtosis, skew
 
 class WGAN_trainer:
     def __init__(self, opts):
@@ -449,6 +450,71 @@ class WGAN_trainer:
         samples_mean = round(samples_df.mean(),2)
         samples_std = round(samples_df.std(),2)
         
+        if "BiasVSOriginal":
+            #Original unbias data
+            compare_df = read_root_files([self.latent_path], compare=True)
+            compare_mean = round(compare_df.mean(), 2)
+            compare_std = round(compare_df.std(), 2)
+            #Biased data
+            samples_df = read_root_files([self.compare_path], compare=True)
+            samples_mean = round(samples_df.mean(),2)
+            samples_std = round(samples_df.std(),2)
+            
+            
+            for plot_t in plot_type:
+                for scale_t in scale_type:
+         
+                    for var in samples_df:
+                        
+                        globalMin=min(compare_df.min()[var], samples_df.min()[var])
+                        globalMax=max(compare_df.max()[var], samples_df.max()[var])
+                        binSeq=None
+                        if var.find('pt')!=-1:
+                            binwidth=5
+                            binSeq=np.arange(0, globalMax+binwidth, binwidth)
+                        if var.find('phi')!=-1:
+                            binwidth=np.pi*2/300
+                            binSeq=np.arange(-np.pi, np.pi+binwidth, binwidth)
+                        if var.find('eta')!=-1:
+                            binwidth=np.pi*2/300
+                            concatInf = np.flip(-np.arange(binwidth, -globalMin+binwidth, binwidth))
+                            concatSup = np.arange(0, globalMax+binwidth, binwidth)
+                            binSeq=np.concatenate(concatInf, concatSup)                            
+                        if binSeq is None:
+                            raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
+                        plt.figure(figsize=(9.33, 7));
+                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Original data; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
+                        n_sample,_,_plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Biased data; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
+
+                        if var.find('pt')!=-1 and samples_df.min()[var] < 0:
+                            font = {'family': 'serif',
+                                    'color':  'darkred',
+                                    'weight': 'normal',
+                                    'size': 10,
+                                    }
+                            out_b=round(samples_df.min()[var], 2)
+                            plt.text(0.60, 0.85, f'Sample contains negative values up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
+                       
+                        plt.xlim((binSeq[0], binSeq[-1]))
+                        plt.xlabel(var)
+                        plt.ylabel(plot_t)
+                        plt.yscale(scale_t)
+                        plt.legend(loc='upper right')
+                        plt.savefig(f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
+                        print(f'For plot {plot_t} with VARIABLE: {var}')
+                        samples_skew = round(skew(samples_df[var].to_numpy()),2)
+                        samples_kurtosis = round(kurtosis(samples_df[var].to_numpy()),2)
+                        compare_skew = round(skew(compare_df[var].to_numpy()),2)
+                        compare_kurtosis = round(kurtosis(compare_df[var].to_numpy()),2)
+                        MSE = np.round( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) , 2)
+                        print(f'Mean Square Error (MSE): {MSE}')
+                        print(f'Sample skewness: {samples_skew} \t {data_t} skewness: {compare_skew}')
+                        print(f'Sample kurtosis: {samples_kurtosis} \t {data_t} kurtosis: {compare_kurtosis}')
+                        print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
+                        plt.close()
+            
+            
+            
         data_type=[]
         plot_type=[]
         scale_type=[]
@@ -499,7 +565,8 @@ class WGAN_trainer:
                         plt.figure(figsize=(9.33, 7));
                         n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
                         n_sample,_,_plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
-
+                        if len(n_compare) != len(n_sample):
+                            raise RuntimeError('Histogram bins are differents, imppossible to calculate MSE')
                         if var.find('pt')!=-1 and samples_df.min()[var] < 0:
                             font = {'family': 'serif',
                                     'color':  'darkred',
@@ -515,7 +582,16 @@ class WGAN_trainer:
                         plt.yscale(scale_t)
                         plt.legend(loc='upper right')
                         plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
-                        print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
+                        print(f'Type of data {data_t} for plot {plot_t} with VARIABLE: {var}')
+                        samples_skew = round(skew(samples_df[var].to_numpy()),2)
+                        samples_kurtosis = round(kurtosis(samples_df[var].to_numpy()),2)
+                        compare_skew = round(skew(compare_df[var].to_numpy()),2)
+                        compare_kurtosis = round(kurtosis(compare_df[var].to_numpy()),2)
+                        MSE = np.round( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) , 2)
+                        print(f'Mean Square Error (MSE): {MSE}')
+                        print(f'Sample skewness: {samples_skew} \t {data_t} skewness: {compare_skew}')
+                        print(f'Sample kurtosis: {samples_kurtosis} \t {data_t} kurtosis: {compare_kurtosis}')
+                        print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png \n')
                         plt.close()
         
     def postProcess(self, samples_tensor, var_to_use):
