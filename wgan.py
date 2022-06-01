@@ -449,8 +449,10 @@ class WGAN_trainer:
             
         samples_mean = round(samples_df.mean(),2)
         samples_std = round(samples_df.std(),2)
+
+
         
-        if "BiasVSOriginal":
+        if "BiasVSOriginal" in plot_options:
             #Original unbias data
             compare_df = read_root_files([self.latent_path], compare=True)
             compare_mean = round(compare_df.mean(), 2)
