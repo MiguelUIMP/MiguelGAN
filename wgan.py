@@ -450,7 +450,24 @@ class WGAN_trainer:
         samples_mean = round(samples_df.mean(),2)
         samples_std = round(samples_df.std(),2)
 
-
+            
+            
+        data_type=[]
+        plot_type=[]
+        scale_type=[]
+        
+        if "original_data" in plot_options:
+            data_type.append("original_data")
+        if "bias_data" in plot_options:
+            data_type.append("biased_data")
+        if "density" in plot_options:
+            plot_type.append("Density")
+        if "counts" in plot_options:
+            plot_type.append("Counts")
+        if "log" in plot_options:
+            scale_type.append("log")
+        if "linear" in plot_options:
+            scale_type.append("linear")
         
         if "BiasVSOriginal" in plot_options:
             #Original unbias data
@@ -519,24 +536,7 @@ class WGAN_trainer:
                         print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
                         plt.close()
             
-            
-            
-        data_type=[]
-        plot_type=[]
-        scale_type=[]
-        
-        if "original_data" in plot_options:
-            data_type.append("original_data")
-        if "bias_data" in plot_options:
-            data_type.append("biased_data")
-        if "density" in plot_options:
-            plot_type.append("Density")
-        if "counts" in plot_options:
-            plot_type.append("Counts")
-        if "log" in plot_options:
-            scale_type.append("log")
-        if "linear" in plot_options:
-            scale_type.append("linear")
+
             
         for data_t in data_type:
             if data_t == "original_data":
