@@ -1,4 +1,4 @@
-name: pytorch_v1_cuda_10_2
+name: pytorch
 channels:
   - conda-forge
   - defaults
@@ -12,4 +12,5 @@ dependencies:
   - pandas
   - matplotlib
   - uproot3-methods
-prefix: /work/sesanche/anaconda3/envs/pytorch_v1_cuda_10_2
+  - scipy
+prefix: /work/sesanche/anaconda3/envs/pytorch
