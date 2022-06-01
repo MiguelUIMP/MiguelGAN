@@ -1,0 +1,52 @@
+Warning, you tried to use cuda, but its not available. Will use the CPU
+Creating plots...
+Dataframe shape:  (74131, 34)
+Dataframe shape:  (74131, 34)
+Type of data biased_data for plot Counts with VARIABLE: philep1
+Mean Square Error (MSE): 392.74
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_philep1_biased_data_Counts_linear.png 
+
+Type of data biased_data for plot Counts with VARIABLE: etalep1
+Mean Square Error (MSE): 121.5
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_etalep1_biased_data_Counts_linear.png 
+
+Type of data biased_data for plot Counts with VARIABLE: ptlep1
+Mean Square Error (MSE): 454.09
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_ptlep1_biased_data_Counts_linear.png 
+
+Type of data biased_data for plot Counts with VARIABLE: philep2
+Mean Square Error (MSE): 352.0
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_philep2_biased_data_Counts_linear.png 
+
+Type of data biased_data for plot Counts with VARIABLE: etalep2
+Mean Square Error (MSE): 140.93
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_etalep2_biased_data_Counts_linear.png 
+
+Type of data biased_data for plot Counts with VARIABLE: ptlep2
+Mean Square Error (MSE): 539.76
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_ptlep2_biased_data_Counts_linear.png 
+
+Type of data biased_data for plot Counts with VARIABLE: phib1
+Mean Square Error (MSE): 328.26
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_phib1_biased_data_Counts_linear.png 
+
+Type of data biased_data for plot Counts with VARIABLE: etab1
+Mean Square Error (MSE): 186.95
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_etab1_biased_data_Counts_linear.png 
+
+Type of data biased_data for plot Counts with VARIABLE: ptb1
+Mean Square Error (MSE): 5068.86
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_ptb1_biased_data_Counts_linear.png 
+
+Type of data biased_data for plot Counts with VARIABLE: phib2
+Mean Square Error (MSE): 296.43
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_phib2_biased_data_Counts_linear.png 
+
+Type of data biased_data for plot Counts with VARIABLE: etab2
+Mean Square Error (MSE): 134.86
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_etab2_biased_data_Counts_linear.png 
+
+Type of data biased_data for plot Counts with VARIABLE: ptb2
+Mean Square Error (MSE): 3245.52
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_178_ptb2_biased_data_Counts_linear.png 
+
