@@ -13,7 +13,7 @@ import matplotlib.pyplot as plt
 plt.switch_backend('agg')
 from numpy.random import randint
 import pandas as pd
-from scipy.stats import kurtosis, skew
+#from scipy.stats import kurtosis, skew
 
 class WGAN_trainer:
     def __init__(self, opts):
@@ -502,14 +502,18 @@ class WGAN_trainer:
                         plt.legend(loc='upper right')
                         plt.savefig(f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
                         print(f'For plot {plot_t} with VARIABLE: {var}')
+                        '''
                         samples_skew = round(skew(samples_df[var].to_numpy()),2)
                         samples_kurtosis = round(kurtosis(samples_df[var].to_numpy()),2)
                         compare_skew = round(skew(compare_df[var].to_numpy()),2)
                         compare_kurtosis = round(kurtosis(compare_df[var].to_numpy()),2)
+                        '''
                         MSE = np.round( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) , 2)
                         print(f'Mean Square Error (MSE): {MSE}')
+                        '''
                         print(f'Sample skewness: {samples_skew} \t {data_t} skewness: {compare_skew}')
                         print(f'Sample kurtosis: {samples_kurtosis} \t {data_t} kurtosis: {compare_kurtosis}')
+                        '''
                         print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
                         plt.close()
             
@@ -583,14 +587,18 @@ class WGAN_trainer:
                         plt.legend(loc='upper right')
                         plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
                         print(f'Type of data {data_t} for plot {plot_t} with VARIABLE: {var}')
+                        '''
                         samples_skew = round(skew(samples_df[var].to_numpy()),2)
                         samples_kurtosis = round(kurtosis(samples_df[var].to_numpy()),2)
                         compare_skew = round(skew(compare_df[var].to_numpy()),2)
                         compare_kurtosis = round(kurtosis(compare_df[var].to_numpy()),2)
+                        '''
                         MSE = np.round( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) , 2)
                         print(f'Mean Square Error (MSE): {MSE}')
+                        '''
                         print(f'Sample skewness: {samples_skew} \t {data_t} skewness: {compare_skew}')
                         print(f'Sample kurtosis: {samples_kurtosis} \t {data_t} kurtosis: {compare_kurtosis}')
+                        '''
                         print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png \n')
                         plt.close()
         
