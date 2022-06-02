@@ -168,7 +168,7 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
         else:
             data=pd.concat([data,tree.arrays(tree.keys(), library='pd')])
 
-        print("Dataframe shape: ", data.shape)
+        
         # data es un pandas.DataFrame, data.values es un array, para una primera
         # aproximación, vamos a usar solo philep1, etalep1 y ptlep1 de las 34 posibles variables 
         # del dataframe
@@ -250,7 +250,8 @@ def preProcess(data):
             newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz})), axis=1)
         if newData is not None and var == 'MET':
             newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py})), axis=1)
-        
+    
+    print("Cartesian coord Dataframe shape: ", newData.shape)
     return newData
     
 
