@@ -375,7 +375,7 @@ class WGAN_trainer:
         latent_data = read_root_files([self.latent_path], generate=True) 
         samples=[]
         for _ in range(number_of_samples):
-            z=self.get_torch_variable( torch.cat( (self.generate_latent_space(1), torch.reshape(latent_data[randint(low=0, high=latent_data.shape[0]), :], (-1,12))), dim=1 ) )
+            z=self.get_torch_variable( torch.cat( (self.generate_latent_space(1), torch.reshape(latent_data[randint(low=0, high=latent_data.shape[0]), :], (-1,14))), dim=1 ) )
             self.G.eval()
             sample=self.G(z).data.cpu()
             samples.append( sample ) 
@@ -613,7 +613,7 @@ class WGAN_trainer:
         '''
         samples = pd.DataFrame(data=samples_tensor.numpy(), columns=var_to_use, dtype="float64")
         newData = None
-        for var in ['lep1', 'lep2', 'b1', 'b2']:
+        for var in ['lep1', 'lep2', 'b1', 'b2', 'MET']:
             # meter condicion para no usar la eta del MET, osea no sacar pzMET
             phi = np.arctan(samples[''.join(('py', var))]/samples[''.join(('px', var))])
             phi = phi*(samples[''.join(('px', var))]>0) + phi*(samples[''.join(('px', var))]<0) + ((samples[''.join(('py', var))]>0)-0.5)*2 * (samples[''.join(('px', var))]<0)*np.pi
@@ -635,7 +635,7 @@ class WGAN_trainer:
             if newData is not None and var != 'MET':
                 newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt})), axis=1)
             if newData is not None and var == 'MET':
-                pass
+                newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('pt', var)): pt})), axis=1)
         return newData
 
 
