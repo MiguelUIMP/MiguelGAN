@@ -451,9 +451,7 @@ class WGAN_trainer:
         samples_std = samples_df.std(axis=0).round(2)            
         samples_skew = samples_df.skew(axis=0).round(2)
         samples_kurtosis = samples_df.kurtosis(axis=0).round(2)
-
-            
-            
+  
         data_type=[]
         plot_type=[]
         scale_type=[]
@@ -487,6 +485,9 @@ class WGAN_trainer:
             samples_kurtosis = samples_df.kurtosis(axis=0).round(2)
             
             for plot_t in plot_type:
+                
+                print(f'\nType of data: BiasVSOriginal for plot: {plot_t}\n')
+                
                 for scale_t in scale_type:
          
                     for var in samples_df:
@@ -525,15 +526,18 @@ class WGAN_trainer:
                         plt.ylabel(plot_t)
                         plt.yscale(scale_t)
                         plt.legend(loc='upper right')
-                        if 'saveFig' in plot_options:
-                            plt.savefig(f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
-                            
-                        MSE = np.round( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) , 2)                            
-                        print(f'For plot {plot_t} with VARIABLE: {var}')
-                        print(f'Mean Square Error (MSE): {MSE}')
+                        
+                        RMSE = np.round( np.sqrt( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) ) , 2)
+                        print(f'VARIABLE: {var}')
+                        print(f'Root Mean Square Error (RMSE): {RMSE}')
                         print(f'Sample skewness: {samples_skew[var]} \t {data_t} skewness: {compare_skew[var]}')
                         print(f'Sample kurtosis: {samples_kurtosis[var]} \t {data_t} kurtosis: {compare_kurtosis[var]}')
-                        print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
+                        
+                        if 'saveFig' in plot_options:
+                            plt.savefig(f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
+                            print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
+            
+                        print('\n')
                         plt.close()
             
 
@@ -552,7 +556,7 @@ class WGAN_trainer:
             
             for plot_t in plot_type:
                 
-                print(f'Type of data: {data_t} for plot: {plot_t}') 
+                print(f'\nType of data: {data_t} for plot: {plot_t}\n') 
                 
                 for scale_t in scale_type:
          
@@ -602,8 +606,9 @@ class WGAN_trainer:
                         
                         if 'saveFig' in plot_options:
                             plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
-                            print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png \n')
-                            
+                            print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
+            
+                        print('\n')
                         plt.close()
         
     def postProcess(self, samples_tensor, var_to_use):
