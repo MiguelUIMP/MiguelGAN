@@ -614,6 +614,8 @@ class WGAN_trainer:
             
                         print('\n')
                         plt.close()
+                    
+        print("Task done successfully!")   
         
     def postProcess(self, samples_tensor, var_to_use):
 
