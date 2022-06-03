@@ -483,7 +483,7 @@ class WGAN_trainer:
             samples_df = read_root_files([self.compare_path], compare=True)
             samples_mean = samples_df.mean(axis=0).round(2)
             samples_std = samples_df.std(axis=0).round(2)            
-            samples_skew = samples_df.skew(axis=0),.round(2)
+            samples_skew = samples_df.skew(axis=0).round(2)
             samples_kurtosis = samples_df.kurtosis(axis=0).round(2)
             
             for plot_t in plot_type:
