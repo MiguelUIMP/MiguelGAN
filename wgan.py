@@ -446,7 +446,6 @@ class WGAN_trainer:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
             samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
             
-        samples_df = read_root_files([self.compare_path], compare=True)
         samples_mean = samples_df.mean(axis=0).round(2)
         samples_std = samples_df.std(axis=0).round(2)            
         samples_skew = samples_df.skew(axis=0).round(2)
@@ -548,7 +547,6 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_df = read_root_files([self.latent_path], compare=True)
             compare_mean = compare_df.mean(axis=0).round(2)
             compare_std = compare_df.std(axis=0).round(2)
             compare_skew = compare_df.skew(axis=0).round(2)
