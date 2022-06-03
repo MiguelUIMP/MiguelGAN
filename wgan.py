@@ -544,12 +544,12 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-        compare_df = read_root_files([self.latent_path], compare=True)
-        compare_mean = round(compare_df.mean(axis=0), 2)
-        compare_std = round(compare_df.std(axis=0), 2)
-        compare_skew = round(compare_df.skew(axis=0),2)
-        compare_kurtosis = round(compare_df.kurtosis(axis=0),2)
-
+            compare_df = read_root_files([self.latent_path], compare=True)
+            compare_mean = round(compare_df.mean(axis=0), 2)
+            compare_std = round(compare_df.std(axis=0), 2)
+            compare_skew = round(compare_df.skew(axis=0),2)
+            compare_kurtosis = round(compare_df.kurtosis(axis=0),2)
+            
             for plot_t in plot_type:
                 for scale_t in scale_type:
          
