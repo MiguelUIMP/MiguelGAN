@@ -554,7 +554,7 @@ class WGAN_trainer:
                 for scale_t in scale_type:
          
                     for var in samples_df:
-                        
+                        print(var)
                         globalMin=min(compare_df.min()[var], samples_df.min()[var])
                         globalMax=max(compare_df.max()[var], samples_df.max()[var])
                         binSeq=None
