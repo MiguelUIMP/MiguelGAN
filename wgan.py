@@ -449,8 +449,8 @@ class WGAN_trainer:
         samples_df = read_root_files([self.compare_path], compare=True)
         samples_mean = round(samples_df.mean(axis=0),2)
         samples_std = round(samples_df.std(axis=0),2)            
-        samples_skew = round(samples_df.skew(axis=0)),2)
-        samples_kurtosis = round(kurtosis(samples_df.kurtosis(axis=0)),2)
+        samples_skew = round(samples_df.skew(axis=0),2)
+        samples_kurtosis = round(samples_df.kurtosis(axis=0),2)
 
             
             
@@ -476,15 +476,15 @@ class WGAN_trainer:
             compare_df = read_root_files([self.latent_path], compare=True)
             compare_mean = round(compare_df.mean(axis=0), 2)
             compare_std = round(compare_df.std(axis=0), 2)
-            compare_skew = round(skew(compare_df.skew(axis=0)),2)
-            compare_kurtosis = round(kurtosis(compare_df.kurtosis(axis=0)),2)
+            compare_skew = round(compare_df.skew(axis=0),2)
+            compare_kurtosis = round(compare_df.kurtosis(axis=0),2)
          
             #Biased data
             samples_df = read_root_files([self.compare_path], compare=True)
             samples_mean = round(samples_df.mean(axis=0),2)
             samples_std = round(samples_df.std(axis=0),2)            
-            samples_skew = round(samples_df.skew(axis=0)),2)
-            samples_kurtosis = round(kurtosis(samples_df.kurtosis(axis=0)),2)
+            samples_skew = round(samples_df.skew(axis=0),2)
+            samples_kurtosis = round(samples_df.kurtosis(axis=0),2)
             
             for plot_t in plot_type:
                 for scale_t in scale_type:
@@ -547,8 +547,8 @@ class WGAN_trainer:
         compare_df = read_root_files([self.latent_path], compare=True)
         compare_mean = round(compare_df.mean(axis=0), 2)
         compare_std = round(compare_df.std(axis=0), 2)
-        compare_skew = round(skew(compare_df.skew(axis=0)),2)
-        compare_kurtosis = round(kurtosis(compare_df.kurtosis(axis=0)),2)
+        compare_skew = round(compare_df.skew(axis=0),2)
+        compare_kurtosis = round(compare_df.kurtosis(axis=0),2)
 
             for plot_t in plot_type:
                 for scale_t in scale_type:
