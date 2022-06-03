@@ -598,9 +598,12 @@ class WGAN_trainer:
                         plt.yscale(scale_t)
                         plt.legend(loc='upper right')
                         
+                        print(np.array(n_compare).sum(), '\t',np.array(n_sample).sum())
                         RMSE = np.round( np.sqrt( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) ) , 2)
                         print(f'VARIABLE: {var}')
                         print(f'Root Mean Square Error (RMSE): {RMSE}')
+                        print(f'Sample mean: {samples_mean[var]} \t {data_t} mean: {compare_mean[var]}')
+                        print(f'Sample variance: {samples_std[var]**2} \t {data_t} variance: {compare_std[var]**2}')
                         print(f'Sample skewness: {samples_skew[var]} \t {data_t} skewness: {compare_skew[var]}')
                         print(f'Sample kurtosis: {samples_kurtosis[var]} \t {data_t} kurtosis: {compare_kurtosis[var]}')
                         
