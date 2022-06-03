@@ -530,7 +530,7 @@ class WGAN_trainer:
                         print(f'VARIABLE: {var}')
                         print(f'Root Mean Square Error (RMSE): {RMSE}')
                         print(f'Sample mean: {samples_mean[var]} \t {data_t} mean: {compare_mean[var]}')
-                        print(f'Sample variance: {round(samples_std[var]**2,2)} \t {data_t} variance: {round(compare_std[var]**2},2)')
+                        print(f'Sample variance: {round(samples_std[var]**2,2)} \t {data_t} variance: {round(compare_std[var]**2,2)}')
                         print(f'Sample skewness: {samples_skew[var]} \t {data_t} skewness: {compare_skew[var]}')
                         print(f'Sample kurtosis: {samples_kurtosis[var]} \t {data_t} kurtosis: {compare_kurtosis[var]}')
                         
@@ -602,7 +602,7 @@ class WGAN_trainer:
                         print(f'VARIABLE: {var}')
                         print(f'Root Mean Square Error (RMSE): {RMSE}')
                         print(f'Sample mean: {samples_mean[var]} \t {data_t} mean: {compare_mean[var]}')
-                        print(f'Sample variance: {round(samples_std[var]**2,2)} \t {data_t} variance: {round(compare_std[var]**2},2)')
+                        print(f'Sample variance: {round(samples_std[var]**2,2)} \t {data_t} variance: {round(compare_std[var]**2,2)}')
                         print(f'Sample skewness: {samples_skew[var]} \t {data_t} skewness: {compare_skew[var]}')
                         print(f'Sample kurtosis: {samples_kurtosis[var]} \t {data_t} kurtosis: {compare_kurtosis[var]}')
                         
