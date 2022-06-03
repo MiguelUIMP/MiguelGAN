@@ -547,10 +547,10 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_mean = compare_df.mean(axis=0).round(2).apply(round,digits=2)
-            compare_std = compare_df.std(axis=0).round(2).apply(round,digits=2)
-            compare_skew = compare_df.skew(axis=0).round(2).apply(round,digits=2)
-            compare_kurtosis = compare_df.kurtosis(axis=0).round(2).apply(round,digits=2)
+            compare_mean = compare_df.mean(axis=0).round(2).apply(np.round,decimals=2)
+            compare_std = compare_df.std(axis=0).round(2).apply(np.round,decimals=2)
+            compare_skew = compare_df.skew(axis=0).round(2).apply(np.round,decimals=2)
+            compare_kurtosis = compare_df.kurtosis(axis=0).round(2).apply(np.round,decimals=2)
             
             for plot_t in plot_type:
                 
