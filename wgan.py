@@ -548,9 +548,6 @@ class WGAN_trainer:
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
             compare_mean = compare_df.mean(axis=0).round(2)
-            print(compare_mean)
-            print('\n')
-            print(f'{compare_mean.round(2)}')
             compare_std = compare_df.std(axis=0).round(2)
             compare_skew = compare_df.skew(axis=0).round(2)
             compare_kurtosis = compare_df.kurtosis(axis=0).round(2)
@@ -580,7 +577,7 @@ class WGAN_trainer:
                         if binSeq is None:
                             raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
                         plt.figure(figsize=(9.33, 7));
-                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
+                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {np.round(compare_mean[var],2)} std: {np.round(compare_std[var],2)}', color='blue', alpha=0.5);
                         n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
                         if len(n_compare) != len(n_sample):
                             raise RuntimeError('Histogram bins are differents, imppossible to calculate MSE')
@@ -602,10 +599,10 @@ class WGAN_trainer:
                         RMSE = np.round( np.sqrt( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) ) , 2)
                         print(f'VARIABLE: {var}')
                         print(f'Root Mean Square Error (RMSE): {RMSE}')
-                        print(f'Sample mean: {samples_mean[var]} \t {data_t} mean: {compare_mean[var]}')
-                        print(f'Sample variance: {samples_std[var]**2} \t {data_t} variance: {compare_std[var]**2}')
-                        print(f'Sample skewness: {samples_skew[var]} \t {data_t} skewness: {compare_skew[var]}')
-                        print(f'Sample kurtosis: {samples_kurtosis[var]} \t {data_t} kurtosis: {compare_kurtosis[var]}')
+                        print(f'Sample mean: {np.round(samples_mean[var],2)} \t {data_t} mean: {np.round(compare_mean[var],2)}')
+                        print(f'Sample variance: {np.round(samples_std[var]**2,2)} \t {data_t} variance: {np.round(compare_std[var]**2,2)}')
+                        print(f'Sample skewness: {np.round(samples_skew[var],2)} \t {data_t} skewness: {np.round(compare_skew[var],2)}')
+                        print(f'Sample kurtosis: {np.round(samples_kurtosis[var],2)} \t {data_t} kurtosis: {np.round(compare_kurtosis[var],2)}')
                         
                         if 'saveFig' in plot_options:
                             plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
