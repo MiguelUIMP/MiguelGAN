@@ -446,10 +446,10 @@ class WGAN_trainer:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
             samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
             
-        samples_mean = samples_df.mean(axis=0).round(2)
-        samples_std = samples_df.std(axis=0).round(2)            
-        samples_skew = samples_df.skew(axis=0).round(2)
-        samples_kurtosis = samples_df.kurtosis(axis=0).round(2)
+        samples_mean = samples_df.mean(axis=0).apply(np.round,decimals=2)
+        samples_std = samples_df.std(axis=0).apply(np.round,decimals=2)        
+        samples_skew = samples_df.skew(axis=0).apply(np.round,decimals=2)
+        samples_kurtosis = samples_df.kurtosis(axis=0).apply(np.round,decimals=2)
   
         data_type=[]
         plot_type=[]
@@ -471,17 +471,17 @@ class WGAN_trainer:
         if "BiasVSOriginal" in plot_options:
             #Original unbias data
             compare_df = read_root_files([self.latent_path], compare=True)
-            compare_mean = compare_df.mean(axis=0).round(2)
-            compare_std = compare_df.std(axis=0).round(2)
-            compare_skew = compare_df.skew(axis=0).round(2)
-            compare_kurtosis = compare_df.kurtosis(axis=0).round(2)
+            compare_mean = compare_df.mean(axis=0).apply(np.round,decimals=2)
+            compare_std = compare_df.std(axis=0).apply(np.round,decimals=2)
+            compare_skew = compare_df.skew(axis=0).apply(np.round,decimals=2)
+            compare_kurtosis = compare_df.kurtosis(axis=0).apply(np.round,decimals=2)
          
             #Biased data
             samples_df = read_root_files([self.compare_path], compare=True)
-            samples_mean = samples_df.mean(axis=0).round(2)
-            samples_std = samples_df.std(axis=0).round(2)            
-            samples_skew = samples_df.skew(axis=0).round(2)
-            samples_kurtosis = samples_df.kurtosis(axis=0).round(2)
+            samples_mean = samples_df.mean(axis=0).apply(np.round,decimals=2)
+            samples_std = samples_df.std(axis=0).apply(np.round,decimals=2)            
+            samples_skew = samples_df.skew(axis=0).apply(np.round,decimals=2)
+            samples_kurtosis = samples_df.kurtosis(axis=0).apply(np.round,decimals=2)
             
             for plot_t in plot_type:
                 
@@ -547,10 +547,10 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_mean = compare_df.mean(axis=0).round(2).apply(np.round,decimals=2)
-            compare_std = compare_df.std(axis=0).round(2).apply(np.round,decimals=2)
-            compare_skew = compare_df.skew(axis=0).round(2).apply(np.round,decimals=2)
-            compare_kurtosis = compare_df.kurtosis(axis=0).round(2).apply(np.round,decimals=2)
+            compare_mean = compare_df.mean(axis=0).apply(np.round,decimals=2)
+            compare_std = compare_df.std(axis=0).apply(np.round,decimals=2)
+            compare_skew = compare_df.skew(axis=0).apply(np.round,decimals=2)
+            compare_kurtosis = compare_df.kurtosis(axis=0).apply(np.round,decimals=2)
             
             for plot_t in plot_type:
                 
@@ -599,10 +599,10 @@ class WGAN_trainer:
                         RMSE = np.round( np.sqrt( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) ) , 2)
                         print(f'VARIABLE: {var}')
                         print(f'Root Mean Square Error (RMSE): {RMSE}')
-                        print(f'Sample mean: {np.round(samples_mean[var],2)} \t {data_t} mean: {np.round(compare_mean[var],2)}')
-                        print(f'Sample variance: {np.round(samples_std[var]**2,2)} \t {data_t} variance: {np.round(compare_std[var]**2,2)}')
-                        print(f'Sample skewness: {np.round(samples_skew[var],2)} \t {data_t} skewness: {np.round(compare_skew[var],2)}')
-                        print(f'Sample kurtosis: {np.round(samples_kurtosis[var],2)} \t {data_t} kurtosis: {np.round(compare_kurtosis[var],2)}')
+                        print(f'Sample mean: {samples_mean[var]} \t {data_t} mean: {compare_mean[var]}')
+                        print(f'Sample variance: {samples_std[var]**2} \t {data_t} variance: {compare_std[var]**2}')
+                        print(f'Sample skewness: {samples_skew[var]} \t {data_t} skewness: {compare_skew[var]}')
+                        print(f'Sample kurtosis: {samples_kurtosis[var]} \t {data_t} kurtosis: {compare_kurtosis[var]}')
                         
                         if 'saveFig' in plot_options:
                             plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
