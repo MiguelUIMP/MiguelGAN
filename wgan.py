@@ -548,6 +548,9 @@ class WGAN_trainer:
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
             compare_mean = compare_df.mean(axis=0).round(2)
+            print(compare_mean)
+            print('\n')
+            print(f'{compare_mean.round(2)}')
             compare_std = compare_df.std(axis=0).round(2)
             compare_skew = compare_df.skew(axis=0).round(2)
             compare_kurtosis = compare_df.kurtosis(axis=0).round(2)
@@ -596,7 +599,6 @@ class WGAN_trainer:
                         plt.yscale(scale_t)
                         plt.legend(loc='upper right')
                         
-                        print(np.array(n_compare).sum(), '\t',np.array(n_sample).sum())
                         RMSE = np.round( np.sqrt( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) ) , 2)
                         print(f'VARIABLE: {var}')
                         print(f'Root Mean Square Error (RMSE): {RMSE}')
