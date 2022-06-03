@@ -251,7 +251,7 @@ def preProcess(data):
         if newData is not None and var == 'MET':
             newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py})), axis=1)
     
-    print("Cartesian coord Dataframe shape: ", newData.shape)
+#     print("Cartesian coord Dataframe shape: ", newData.shape)
     return newData
     
 
