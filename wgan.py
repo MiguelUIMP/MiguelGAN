@@ -423,7 +423,7 @@ class WGAN_trainer:
                 
     def plot_samples(self, plot_options, num_model, label="FINAL", process=True):
         
-        print("Creating plots...")
+        
         # load last model if not model number is passed
         if num_model is None:
             num_docs = len(os.listdir("./TrainedGANs"))
@@ -431,6 +431,8 @@ class WGAN_trainer:
         else :
             label = '_'.join((label, str(num_model)))
             
+        print(f'Creating plots for model {label}...')   
+        
         if not os.path.exists(f'./GeneratedSamplesTTbar/samples_{label}.pt') and num_model is not None:
             raise RuntimeError('Introduce a valid samples model number, current value does not exist.')
         if not os.path.exists(f'./GeneratedSamplesTTbar/samples_{label}.pt') and num_model is None:
@@ -651,7 +653,7 @@ if __name__=="__main__":
     from optparse import OptionParser
     parser = OptionParser()
 
-    parser.add_option("--no-cuda",           dest="cuda", action='store_false', default=True, help="Do not try to use cuda. Otherwise it will try to use cuda only if its available");
+    parser.add_option("--no-cuda",           dest="cuda", action='store_false', default=False, help="Do not try to use cuda. Otherwise it will try to use cuda only if its available");
     parser.add_option("--cuda_index",           dest="cuda_index", type="int", default=0, help="Index of the device to use");
     parser.add_option("--experiment",           dest="experiment", type="string", default="TTbar", help="experiment to load models");
     parser.add_option("--model",           dest="model", type="string", default="ttbarGAN_linear", help="Architecture of the generator and critic. It also fixes the latent space distribution");
