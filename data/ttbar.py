@@ -53,7 +53,7 @@ class ttbar_TrainGen(data.Dataset):
        # from six.moves import urllib
         import shutil
 
-        transformed_file = "/home/ubuntu/addSystematics/ptLeptonB20S20/ttbar-Madgraph-MLM.root"
+        transformed_file = "/home/ubuntu/addSystematics/ptLeptonB60S20ALL/ttbar-Madgraph-MLM.root"
         if self._check_exists():
             return
         
@@ -168,7 +168,7 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
         else:
             data=pd.concat([data,tree.arrays(tree.keys(), library='pd')])
 
-        print("Dataframe shape: ", data.shape)
+        
         # data es un pandas.DataFrame, data.values es un array, para una primera
         # aproximación, vamos a usar solo philep1, etalep1 y ptlep1 de las 34 posibles variables 
         # del dataframe
@@ -198,7 +198,7 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
         processed_data = preProcess(data)
         # workaround due to in real life we dont have nu data neither mMET and etaMET
         if pass_df:
-            return [var for var in processed_data.columns if var.find('nu') == -1 and var.find('m') == -1 and var.find('MET') == -1]
+            return [var for var in processed_data.columns if var.find('nu') == -1 and var.find('m') == -1 and var.find('id') == -1 and var.find('Chi') == -1 and var.find('MET') == -1]
         # MC original dataset and bias dataset are split in 2 disjoint sets each one, it depends on their purpose
         if fileType=='train' or generate:
             # in the reshape (-1,3): -1 stands for the dataset size, keep it, 3 satands for the variables (columns) selected 
@@ -209,7 +209,7 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
 
         if compare:
             #return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
-            return data[[var for var in data.columns if var.find('nu') == -1 and var.find('MET') == -1 and var.find('m') == -1]][int(round(data.shape[0]/2)):]
+            return data[[var for var in data.columns if var.find('nu') == -1 and var.find('MET') == -1 and var.find('m') == -1 and var.find('id') == -1 and var.find('Chi') == -1]][int(round(data.shape[0]/2)):]
  
         
     if not process:
@@ -228,7 +228,7 @@ def preProcess(data):
     Change from spherical transverse coordinates to cartesian 
     '''
     newData = None
-    for var in ['lep1', 'lep2', 'b1', 'b2', 'MET']:
+    for var in ['lep1', 'lep2', 'b1', 'b2']:
         # meter condicion para no usar la eta del MET, osea no sacar pzMET
         px = data[''.join(('pt', var))]*np.cos(data[''.join(('phi', var))])
         py = data[''.join(('pt', var))]*np.sin(data[''.join(('phi', var))])
@@ -249,8 +249,9 @@ def preProcess(data):
         if newData is not None and var != 'MET':
             newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz})), axis=1)
         if newData is not None and var == 'MET':
-            pass
-        
+            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py})), axis=1)
+    
+#     print("Cartesian coord Dataframe shape: ", newData.shape)
     return newData
     
 
@@ -297,6 +298,5 @@ class ttbar_data_loader:
         
 
       
-
 
 
