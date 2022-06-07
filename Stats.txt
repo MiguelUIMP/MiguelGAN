@@ -1,113 +1,113 @@
-Creating plots for model FINAL_180...
+Creating plots for model FINAL_181...
 
 Type of data: biased_data for plot: Counts
 
 VARIABLE: philep1
-Root Mean Square Error (RMSE): 17.42
-Sample mean: -0.0 	 biased_data mean: 0.0
-Sample variance: 3.31 	 biased_data variance: 3.28
-Sample skewness: -0.02 	 biased_data skewness: 0.0
+Root Mean Square Error (RMSE): 18.36
+Sample mean: 0.06 	 biased_data mean: 0.0
+Sample variance: 3.28 	 biased_data variance: 3.28
+Sample skewness: -0.04 	 biased_data skewness: 0.0
 Sample kurtosis: -1.21 	 biased_data kurtosis: -1.2
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_philep1_biased_data_Counts_linear.png
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_philep1_biased_data_Counts_linear.png
 
 
 VARIABLE: etalep1
-Root Mean Square Error (RMSE): 12.24
-Sample mean: 0.02 	 biased_data mean: -0.01
-Sample variance: 2.28 	 biased_data variance: 2.1
-Sample skewness: -0.01 	 biased_data skewness: 0.0
-Sample kurtosis: -0.17 	 biased_data kurtosis: -0.05
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_etalep1_biased_data_Counts_linear.png
+Root Mean Square Error (RMSE): 11.99
+Sample mean: 0.05 	 biased_data mean: -0.01
+Sample variance: 2.25 	 biased_data variance: 2.1
+Sample skewness: -0.02 	 biased_data skewness: 0.0
+Sample kurtosis: -0.12 	 biased_data kurtosis: -0.05
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_etalep1_biased_data_Counts_linear.png
 
 
 VARIABLE: ptlep1
-Root Mean Square Error (RMSE): 20.56
-Sample mean: 81.32 	 biased_data mean: 81.22
-Sample variance: 3725.88 	 biased_data variance: 3668.72
-Sample skewness: 2.51 	 biased_data skewness: 2.43
-Sample kurtosis: 18.18 	 biased_data kurtosis: 17.02
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_ptlep1_biased_data_Counts_linear.png
+Root Mean Square Error (RMSE): 35.96
+Sample mean: 80.56 	 biased_data mean: 81.22
+Sample variance: 3746.66 	 biased_data variance: 3668.72
+Sample skewness: 2.03 	 biased_data skewness: 2.43
+Sample kurtosis: 8.15 	 biased_data kurtosis: 17.02
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_ptlep1_biased_data_Counts_linear.png
 
 
 VARIABLE: philep2
-Root Mean Square Error (RMSE): 17.51
-Sample mean: -0.04 	 biased_data mean: -0.0
-Sample variance: 3.28 	 biased_data variance: 3.28
-Sample skewness: 0.02 	 biased_data skewness: 0.0
-Sample kurtosis: -1.21 	 biased_data kurtosis: -1.2
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_philep2_biased_data_Counts_linear.png
+Root Mean Square Error (RMSE): 19.14
+Sample mean: 0.08 	 biased_data mean: -0.0
+Sample variance: 3.42 	 biased_data variance: 3.28
+Sample skewness: -0.06 	 biased_data skewness: 0.0
+Sample kurtosis: -1.25 	 biased_data kurtosis: -1.2
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_philep2_biased_data_Counts_linear.png
 
 
 VARIABLE: etalep2
-Root Mean Square Error (RMSE): 12.16
+Root Mean Square Error (RMSE): 11.66
 Sample mean: -0.02 	 biased_data mean: -0.0
-Sample variance: 2.19 	 biased_data variance: 2.07
-Sample skewness: 0.04 	 biased_data skewness: -0.01
-Sample kurtosis: 0.02 	 biased_data kurtosis: -0.04
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_etalep2_biased_data_Counts_linear.png
+Sample variance: 2.13 	 biased_data variance: 2.07
+Sample skewness: 0.0 	 biased_data skewness: -0.01
+Sample kurtosis: -0.1 	 biased_data kurtosis: -0.04
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_etalep2_biased_data_Counts_linear.png
 
 
 VARIABLE: ptlep2
-Root Mean Square Error (RMSE): 23.51
-Sample mean: 81.89 	 biased_data mean: 80.61
-Sample variance: 3813.06 	 biased_data variance: 3539.06
-Sample skewness: 2.1 	 biased_data skewness: 2.2
-Sample kurtosis: 9.06 	 biased_data kurtosis: 9.81
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_ptlep2_biased_data_Counts_linear.png
+Root Mean Square Error (RMSE): 33.04
+Sample mean: 82.47 	 biased_data mean: 80.61
+Sample variance: 3897.5 	 biased_data variance: 3539.06
+Sample skewness: 2.17 	 biased_data skewness: 2.2
+Sample kurtosis: 8.99 	 biased_data kurtosis: 9.81
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_ptlep2_biased_data_Counts_linear.png
 
 
 VARIABLE: phib1
-Root Mean Square Error (RMSE): 17.27
-Sample mean: 0.0 	 biased_data mean: -0.01
-Sample variance: 3.35 	 biased_data variance: 3.28
-Sample skewness: 0.01 	 biased_data skewness: 0.01
-Sample kurtosis: -1.21 	 biased_data kurtosis: -1.2
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_phib1_biased_data_Counts_linear.png
+Root Mean Square Error (RMSE): 19.25
+Sample mean: 0.05 	 biased_data mean: -0.01
+Sample variance: 3.24 	 biased_data variance: 3.28
+Sample skewness: -0.03 	 biased_data skewness: 0.01
+Sample kurtosis: -1.15 	 biased_data kurtosis: -1.2
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_phib1_biased_data_Counts_linear.png
 
 
 VARIABLE: etab1
-Root Mean Square Error (RMSE): 12.95
+Root Mean Square Error (RMSE): 11.86
 Sample mean: -0.02 	 biased_data mean: -0.01
-Sample variance: 2.28 	 biased_data variance: 2.07
-Sample skewness: -0.02 	 biased_data skewness: 0.02
-Sample kurtosis: -0.16 	 biased_data kurtosis: 0.0
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_etab1_biased_data_Counts_linear.png
+Sample variance: 2.25 	 biased_data variance: 2.07
+Sample skewness: -0.06 	 biased_data skewness: 0.02
+Sample kurtosis: -0.1 	 biased_data kurtosis: 0.0
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_etab1_biased_data_Counts_linear.png
 
 
 VARIABLE: ptb1
-Root Mean Square Error (RMSE): 77.09
-Sample mean: 117.92 	 biased_data mean: 119.75
-Sample variance: 6449.7 	 biased_data variance: 5480.44
-Sample skewness: 1.59 	 biased_data skewness: 2.02
-Sample kurtosis: 4.43 	 biased_data kurtosis: 9.07
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_ptb1_biased_data_Counts_linear.png
+Root Mean Square Error (RMSE): 117.01
+Sample mean: 74.06 	 biased_data mean: 74.84
+Sample variance: 2758.35 	 biased_data variance: 2140.91
+Sample skewness: 1.96 	 biased_data skewness: 2.02
+Sample kurtosis: 7.26 	 biased_data kurtosis: 9.07
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_ptb1_biased_data_Counts_linear.png
 
 
 VARIABLE: phib2
-Root Mean Square Error (RMSE): 17.46
-Sample mean: -0.01 	 biased_data mean: 0.0
-Sample variance: 3.31 	 biased_data variance: 3.28
-Sample skewness: 0.02 	 biased_data skewness: -0.0
-Sample kurtosis: -1.22 	 biased_data kurtosis: -1.2
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_phib2_biased_data_Counts_linear.png
+Root Mean Square Error (RMSE): 17.8
+Sample mean: 0.02 	 biased_data mean: 0.0
+Sample variance: 3.2 	 biased_data variance: 3.28
+Sample skewness: -0.04 	 biased_data skewness: -0.0
+Sample kurtosis: -1.19 	 biased_data kurtosis: -1.2
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_phib2_biased_data_Counts_linear.png
 
 
 VARIABLE: etab2
-Root Mean Square Error (RMSE): 14.4
-Sample mean: -0.01 	 biased_data mean: -0.0
+Root Mean Square Error (RMSE): 12.22
+Sample mean: 0.01 	 biased_data mean: -0.0
 Sample variance: 2.31 	 biased_data variance: 2.1
-Sample skewness: 0.04 	 biased_data skewness: -0.01
-Sample kurtosis: -0.21 	 biased_data kurtosis: 0.0
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_etab2_biased_data_Counts_linear.png
+Sample skewness: -0.05 	 biased_data skewness: -0.01
+Sample kurtosis: -0.04 	 biased_data kurtosis: 0.0
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_etab2_biased_data_Counts_linear.png
 
 
 VARIABLE: ptb2
-Root Mean Square Error (RMSE): 57.37
-Sample mean: 115.51 	 biased_data mean: 119.44
-Sample variance: 6179.53 	 biased_data variance: 5280.93
-Sample skewness: 1.99 	 biased_data skewness: 1.75
-Sample kurtosis: 9.25 	 biased_data kurtosis: 6.28
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_180_ptb2_biased_data_Counts_linear.png
+Root Mean Square Error (RMSE): 110.83
+Sample mean: 74.23 	 biased_data mean: 74.65
+Sample variance: 2927.89 	 biased_data variance: 2062.98
+Sample skewness: 2.08 	 biased_data skewness: 1.75
+Sample kurtosis: 9.5 	 biased_data kurtosis: 6.28
+Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_181_ptb2_biased_data_Counts_linear.png
 
 
 Task done successfully!
