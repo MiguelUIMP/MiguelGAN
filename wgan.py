@@ -17,7 +17,7 @@ import pandas as pd
 class WGAN_trainer:
     def __init__(self, opts):
         
-        print('Welcome back!\nKeep calm and take a cup of coffe while the program is running...\n')
+        
         self._options=opts
 
         model_server               = all_models(self._options)
@@ -633,6 +633,7 @@ class WGAN_trainer:
 if __name__=="__main__":
 
     from optparse import OptionParser
+    print('Welcome back!\nKeep calm and take a cup of coffe while the program is running...\n')
     parser = OptionParser()
 
     parser.add_option("--no-cuda",           dest="cuda", action='store_false', default=False, help="Do not try to use cuda. Otherwise it will try to use cuda only if its available");
