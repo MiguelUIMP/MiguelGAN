@@ -25,9 +25,9 @@ The `environment.yml` file contains the packages needed to run the code with pyt
 
 ### Create plots comparing the generated sample with bias or original samples
 
-```python -W ignore wgan.py --do_what plot --plot_opt bias_data --plot_opt counts --plot_opt linear --plot_opt saveFig --num_model 1 > Stats.txt & cat Stats.txt```
+```python -W ignore wgan.py --do_what plot --plot_opt bias_data --plot_opt counts --plot_opt linear --plot_opt saveFig --num_model 1 > Stats.txt & tail -f Stats.txt```
 
-```python -W ignore wgan.py --do_what plot --plot_opt BiasVSOriginal --plot_opt counts --plot_opt linear --plot_opt saveFig --num_model 1 > StatsBVSO.txt & cat StatsBVSO.txt```
+```python -W ignore wgan.py --do_what plot --plot_opt BiasVSOriginal --plot_opt counts --plot_opt linear --plot_opt saveFig --num_model 1 > StatsBVSO.txt & tail -f StatsBVSO.txt```
 
 
 ## Package contents
