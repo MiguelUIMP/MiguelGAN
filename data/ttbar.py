@@ -53,7 +53,7 @@ class ttbar_TrainGen(data.Dataset):
        # from six.moves import urllib
         import shutil
 
-        transformed_file = "/home/ubuntu/addSystematics/ptLepton05/ttbar-Madgraph-MLM.root"
+        transformed_file = "/home/ubuntu/addSystematics/ptLepton60/ttbar-Madgraph-MLM.root"
         if self._check_exists():
             return
         
@@ -154,7 +154,7 @@ class ttbar_LatentGen(data.Dataset):
         
 
 
-def read_root_files(paths, fileType=None, generate=False, compare=False, process=True):
+def read_root_files(paths, fileType=None, generate=False, compare=False, process=True, pass_df=False):
     '''
     Read root files to return torch.tensor to latent space, train, generate samples, or pd.Dataframe to compare final results
     '''
@@ -168,46 +168,91 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
         else:
             data=pd.concat([data,tree.arrays(tree.keys(), library='pd')])
 
-        print("Dataframe shape: ", data.shape)
+        
         # data es un pandas.DataFrame, data.values es un array, para una primera
         # aproximación, vamos a usar solo philep1, etalep1 y ptlep1 de las 34 posibles variables 
         # del dataframe
-        
+    
+    '''
     # if variables need preprocess or not
     if process:
         processed_data = preProcess(data)
+        # workaround due to in real life we dont have nu data neither mMET and etaMET
+        if pass_df:
+            return [var for var in processed_data.columns if var.find('nu') == -1 and var.find('mMET') == -1 and var.find('etaMET') == -1]
         # MC original dataset and bias dataset are split in 2 disjoint sets each one, it depends on their purpose
         if fileType=='train' or generate:
             # in the reshape (-1,3): -1 stands for the dataset size, keep it, 3 satands for the variables (columns) selected 
-            return torch.reshape(torch.tensor(processed_data[["pxlep1", "pylep1", "pzlep1"]][:int(round(data.shape[0]/2))].values), (-1,3)) 
+            return torch.reshape(torch.tensor(processed_data[:int(round(data.shape[0]/2))].values), (-1,18)) 
 
         if fileType=='latent':
-            return torch.reshape(torch.tensor(processed_data[["pxlep1", "pylep1", "pzlep1"]][int(round(data.shape[0]/2)):].values), (-1,3))
+            return torch.reshape(torch.tensor(processed_data[int(round(data.shape[0]/2)):].values), (-1,18))
 
         if compare:
-            return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
-            #return processed_data[["pxlep1", "pylep1", "pzlep1"]][int(round(data.shape[0]/2)):]
+            #return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
+            return data[[var for var in data.columns if var.find('nu') == -1 and var.find('mMET') == -1 and var.find('etaMET') == -1]][int(round(data.shape[0]/2)):]
+    '''       
+
+    # if variables need preprocess or not
+    if process:
+        processed_data = preProcess(data)
+        # workaround due to in real life we dont have nu data neither mMET and etaMET
+        if pass_df:
+            return [var for var in processed_data.columns if var.find('nu') == -1 and var.find('m') == -1 and var.find('id') == -1 and var.find('Chi') == -1 and var.find('b') == -1 and var.find('lep2') == -1 and var.find('MET') == -1]
+        # MC original dataset and bias dataset are split in 2 disjoint sets each one, it depends on their purpose
+        if fileType=='train' or generate:
+            # in the reshape (-1,3): -1 stands for the dataset size, keep it, 3 satands for the variables (columns) selected 
+            return torch.reshape(torch.tensor(processed_data[:int(round(data.shape[0]/2))].values), (-1,3)) 
+
+        if fileType=='latent':
+            return torch.reshape(torch.tensor(processed_data[int(round(data.shape[0]/2)):].values), (-1,3))
+
+        if compare:
+            #return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
+            return data[[var for var in data.columns if var.find('nu') == -1 and var.find('m') == -1 and var.find('id') == -1 and var.find('Chi') == -1 and var.find('b') == -1 and var.find('lep2') == -1 and var.find('MET') == -1]][int(round(data.shape[0]/2)):]
+ 
         
     if not process:
 
         if fileType=='train' or generate:
-            return torch.reshape(torch.tensor(data[["philep1", "etalep1", "ptlep1"]][:int(round(data.shape[0]/2))].values), (-1,3))
+            return torch.reshape(torch.tensor(data[var_to_use][:int(round(data.shape[0]/2))].values), (-1,18))
 
         if fileType=='latent':
-            return torch.reshape(torch.tensor(data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):].values), (-1,3))
+            return torch.reshape(torch.tensor(data[var_to_use][int(round(data.shape[0]/2)):].values), (-1,18))
 
         if compare:
-            return data[["philep1", "etalep1", "ptlep1"]][int(round(data.shape[0]/2)):]
+            return data[var_to_use][int(round(data.shape[0]/2)):]
             
 def preProcess(data):
     '''
     Change from spherical transverse coordinates to cartesian 
     '''
-    px = data['ptlep1']*np.cos(data['philep1'])
-    py = data['ptlep1']*np.sin(data['philep1'])
-    pz = data['ptlep1']*np.sinh(data['etalep1'])
+    newData = None
+    for var in ['lep1']:
+        # meter condicion para no usar la eta del MET, osea no sacar pzMET
+        px = data[''.join(('pt', var))]*np.cos(data[''.join(('phi', var))])
+        py = data[''.join(('pt', var))]*np.sin(data[''.join(('phi', var))])
+        if var != 'MET':
+            pz = data[''.join(('pt', var))]*np.sinh(data[''.join(('eta', var))]) 
+        '''
+        if newData is None:
+            newData=pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz, ''.join(('m', var)): data[''.join(('m', var))]})
+            continue
+        if newData is not None and var != 'MET':
+            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz, ''.join(('m', var)): data[''.join(('m', var))]})), axis=1)
+        if newData is not None and var == 'MET':
+            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py})), axis=1)
+        '''
+        if newData is None:
+            newData=pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz})
+            continue
+        if newData is not None and var != 'MET':
+            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz})), axis=1)
+        if newData is not None and var == 'MET':
+            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py})), axis=1)
     
-    return pd.DataFrame({'pxlep1': px, 'pylep1': py, 'pzlep1': pz})
+#     print("Cartesian coord Dataframe shape: ", newData.shape)
+    return newData
     
 
 
@@ -253,6 +298,4 @@ class ttbar_data_loader:
         
 
       
-
-
 
