@@ -623,35 +623,10 @@ class WGAN_trainer:
     def postProcess(self, samples_tensor, var_to_use):
 
         '''
-        Change from cartesian coordinates to spherical transverse
+        Stay in spherical transverse coordinates 
         '''
         samples = pd.DataFrame(data=samples_tensor.numpy(), columns=var_to_use, dtype="float64")
-        '''
-        newData = None
-        for var in ['lep1']:
-            # meter condicion para no usar la eta del MET, osea no sacar pzMET
-            phi = np.arctan(samples[''.join(('py', var))]/samples[''.join(('px', var))])
-            phi = phi*(samples[''.join(('px', var))]>0) + phi*(samples[''.join(('px', var))]<0) + ((samples[''.join(('py', var))]>0)-0.5)*2 * (samples[''.join(('px', var))]<0)*np.pi
-            pt = np.sqrt(samples[''.join(('py', var))]**2+samples[''.join(('px', var))]**2)
-            if var != 'MET':
-                eta = np.arcsinh(samples[''.join(('pz', var))]/pt) 
-            #'''
-            if newData is None:
-                newData=pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt, ''.join(('m', var)): samples[''.join(('m', var))]})
-                continue
-            if newData is not None and var != 'MET':
-                newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt, ''.join(('m', var)): samples[''.join(('m', var))]})), axis=1)
-            if newData is not None and var == 'MET':
-                newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('pt', var)): pt})), axis=1)
-            #'''
-            if newData is None:
-                newData=pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt})
-                continue
-            if newData is not None and var != 'MET':
-                newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt})), axis=1)
-            if newData is not None and var == 'MET':
-                newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('pt', var)): pt})), axis=1)
-        '''
+
         return samples
 
 
