@@ -17,7 +17,7 @@ import pandas as pd
 class WGAN_trainer:
     def __init__(self, opts):
         
-        print('Welcome back!\n Keep calm and take a cup of coffe while the program is running...')
+        print('Welcome back!\nKeep calm and take a cup of coffe while the program is running...\n')
         self._options=opts
 
         model_server               = all_models(self._options)
