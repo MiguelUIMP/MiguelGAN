@@ -626,7 +626,7 @@ class WGAN_trainer:
         Change from cartesian coordinates to spherical transverse
         '''
         samples = pd.DataFrame(data=samples_tensor.numpy(), columns=var_to_use, dtype="float64")
-	'''
+        '''
         newData = None
         for var in ['lep1']:
             # meter condicion para no usar la eta del MET, osea no sacar pzMET
@@ -651,7 +651,7 @@ class WGAN_trainer:
                 newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt})), axis=1)
             if newData is not None and var == 'MET':
                 newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('pt', var)): pt})), axis=1)
-	'''
+        '''
         return samples
 
 
