@@ -16,13 +16,15 @@ import pandas as pd
 
 class WGAN_trainer:
     def __init__(self, opts):
+        
+        print('Welcome back!\nKeep calm and take a cup of coffe while the program is running...\n')
         self._options=opts
 
         model_server               = all_models(self._options)
         self.G                     = model_server.G
         self.D                     = model_server.D
         self.generate_latent_space = model_server.latent_space_generator
-        
+
         # these could be parsed in the options, but ok 
         self.n_critic=self._options.n_critic
         self.flip_iter=self._options.flip_iter
@@ -184,10 +186,11 @@ class WGAN_trainer:
             
         if self.optimizer == 'Adam':
             # Default values for (beta_1, beta2_)=(0.9, 0.999), paper WGAN-GP values (beta_1, beta_2)=(0, 0.9)
-            optim_discriminator = optim.Adam( self.D.parameters(), lr=self.alpha, betas=(0.9, 0.999))  
+            optim_discriminator = optim.Adam( self.D.parameters(), lr=self.alpha, betas=(0, 0.9))  
             optim_generator     = optim.Adam( self.G.parameters(), lr=self.alpha*self.gen_coeff, betas=(0.9, 0.999))
             #scheduler_discriminator = optim.lr_scheduler.MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
-            scheduler_generator = optim.lr_scheduler.MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            scheduler_generator =  optim.lr_scheduler.LinearLR(optim_generator, start_factor=1, end_factor=self.alpha_end_factor, total_iters=self.generator_iters)
+            scheduler_discriminator =  optim.lr_scheduler.LinearLR(optim_discriminator, start_factor=1, end_factor=self.alpha_end_factor, total_iters=self.generator_iters)
            
         if self.optimizer == 'SGD':
             optim_discriminator = optim.SGD( self.D.parameters(), lr=self.alpha, momentum=self.momentum)
@@ -307,6 +310,7 @@ class WGAN_trainer:
         plt.savefig(f'./TrainedGANs/LossFunction_{model_lab}.png')
         ax.clear()
         plt.close()
+        
 
     def gradient_penalty(self, real_imgs, fake_imgs, penalty_coeff=10):
         #self.G.eval()
@@ -405,18 +409,24 @@ class WGAN_trainer:
                 torch.save(samples_tensor, f)
             print("Samples successfully saved in:", os.path.join(path, f'./GeneratedSamplesTTbar/samples_{label}.pt'))
         
+        '''
+        TODO to write in root files, type the colnames of the dataset, use 
+        tf=uproot.open(path)
+        tree=tf['t']
+        tree.keys()
+        
         if toRoot:
             with uproot.recreate(os.path.join(path, f'./GeneratedSamplesTTbar/samples_{label}.root')) as f:
                 df = pd.DataFrame(samples_tensor).astype("float")
                 df.columns=['philep1', 'etalep1', 'ptlep1']
                 f['t'] = df
             print("Samples successfully saved in:", os.path.join(path, f'./GeneratedSamplesTTbar/samples_{label}.root'))
-                
+        '''        
                 
                 
     def plot_samples(self, plot_options, num_model, label="FINAL", process=True):
         
-        print("Creating plots...")
+        
         # load last model if not model number is passed
         if num_model is None:
             num_docs = len(os.listdir("./TrainedGANs"))
@@ -424,6 +434,8 @@ class WGAN_trainer:
         else :
             label = '_'.join((label, str(num_model)))
             
+        print(f'Creating plots for model {label}...')   
+        
         if not os.path.exists(f'./GeneratedSamplesTTbar/samples_{label}.pt') and num_model is not None:
             raise RuntimeError('Introduce a valid samples model number, current value does not exist.')
         if not os.path.exists(f'./GeneratedSamplesTTbar/samples_{label}.pt') and num_model is None:
@@ -431,17 +443,19 @@ class WGAN_trainer:
             
         # samples tensor load to cpu, it could be load in the gpu    
         samples_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}.pt', map_location=torch.device('cpu'))
-        
+        var_to_use = read_root_files([self.latent_path], pass_df=True)
         # if samples need postProcess to change from cartesian to spherical basis or are already load in spherical ones
         if process:
-            samples_df = self.postProcess(samples_tensor)
+            samples_df = self.postProcess(samples_tensor, var_to_use)
         if not process:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
             samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
             
-        samples_mean = np.round(samples_df.mean(),2)
-        samples_std = np.round(samples_df.std(),2)
-        
+        samples_mean = samples_df.mean(axis=0).apply(np.round,decimals=2)
+        samples_std = samples_df.std(axis=0).apply(np.round,decimals=2)        
+        samples_skew = samples_df.skew(axis=0).apply(np.round,decimals=2)
+        samples_kurtosis = samples_df.kurtosis(axis=0).apply(np.round,decimals=2)
+  
         data_type=[]
         plot_type=[]
         scale_type=[]
@@ -458,6 +472,81 @@ class WGAN_trainer:
             scale_type.append("log")
         if "linear" in plot_options:
             scale_type.append("linear")
+        
+        if "BiasVSOriginal" in plot_options:
+            #Original unbias data
+            compare_df = read_root_files([self.latent_path], compare=True)
+            compare_mean = compare_df.mean(axis=0).apply(np.round,decimals=2)
+            compare_std = compare_df.std(axis=0).apply(np.round,decimals=2)
+            compare_skew = compare_df.skew(axis=0).apply(np.round,decimals=2)
+            compare_kurtosis = compare_df.kurtosis(axis=0).apply(np.round,decimals=2)
+         
+            #Biased data
+            samples_df = read_root_files([self.compare_path], compare=True)
+            samples_mean = samples_df.mean(axis=0).apply(np.round,decimals=2)
+            samples_std = samples_df.std(axis=0).apply(np.round,decimals=2)            
+            samples_skew = samples_df.skew(axis=0).apply(np.round,decimals=2)
+            samples_kurtosis = samples_df.kurtosis(axis=0).apply(np.round,decimals=2)
+            
+            for plot_t in plot_type:
+                
+                print(f'\nType of data: BiasVSOriginal for plot: {plot_t}\n')
+                
+                for scale_t in scale_type:
+         
+                    for var in samples_df:
+                        
+                        globalMin=min(compare_df.min()[var], samples_df.min()[var])
+                        globalMax=max(compare_df.max()[var], samples_df.max()[var])
+                        binSeq=None
+                        if var.find('pt')!=-1:
+                            binwidth=5
+                            binSeq=np.arange(0, globalMax+binwidth, binwidth)
+                        if var.find('phi')!=-1:
+                            binwidth=np.pi*2/300
+                            binSeq=np.arange(-np.pi, np.pi+binwidth, binwidth)
+                        if var.find('eta')!=-1:
+                            binwidth=np.pi*2/300
+                            concatInf = np.flip(-np.arange(binwidth, -globalMin+binwidth, binwidth))
+                            concatSup = np.arange(0, globalMax+binwidth, binwidth)
+                            binSeq=np.concatenate((concatInf, concatSup))                            
+                        if binSeq is None:
+                            raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
+                        plt.figure(figsize=(9.33, 7));
+                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Original data; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
+                        n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Biased data; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
+
+                        if var.find('pt')!=-1 and samples_df.min()[var] < 0:
+                            font = {'family': 'serif',
+                                    'color':  'darkred',
+                                    'weight': 'normal',
+                                    'size': 10,
+                                    }
+                            out_b=round(samples_df.min()[var], 2)
+                            plt.text(0.60, 0.85, f'Sample contains negative values up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
+                       
+                        plt.xlim((binSeq[0], binSeq[-1]))
+                        plt.xlabel(var)
+                        plt.ylabel(plot_t)
+                        plt.yscale(scale_t)
+                        plt.legend(loc='upper right')
+                        
+                        RMSE = np.round( np.sqrt( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) ) , 2)
+                        print(f'VARIABLE: {var}')
+                        print(f'Root Mean Square Error (RMSE): {RMSE}')
+                        print(f'Sample mean: {samples_mean[var]} \t {data_t} mean: {compare_mean[var]}')
+                        print(f'Sample variance: {round(samples_std[var]**2,2)} \t {data_t} variance: {round(compare_std[var]**2,2)}')
+                        print(f'Sample skewness: {samples_skew[var]} \t {data_t} skewness: {compare_skew[var]}')
+                        print(f'Sample kurtosis: {samples_kurtosis[var]} \t {data_t} kurtosis: {compare_kurtosis[var]}')
+                        
+                        if 'saveFig' in plot_options:
+                            plt.savefig(f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
+                            print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
+            
+                        print('\n')
+                        plt.close()
+            
+
             
         for data_t in data_type:
             if data_t == "original_data":
@@ -465,64 +554,111 @@ class WGAN_trainer:
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
                 
-            compare_mean = np.round(compare_df.mean(), 2)
-            compare_std = np.round(compare_df.std(), 2)
-
+            compare_mean = compare_df.mean(axis=0).apply(np.round,decimals=2)
+            compare_std = compare_df.std(axis=0).apply(np.round,decimals=2)
+            compare_skew = compare_df.skew(axis=0).apply(np.round,decimals=2)
+            compare_kurtosis = compare_df.kurtosis(axis=0).apply(np.round,decimals=2)
+            
             for plot_t in plot_type:
+                
+                print(f'\nType of data: {data_t} for plot: {plot_t}\n') 
+                
                 for scale_t in scale_type:
          
                     for var in samples_df:
-
-                        plt.figure(figsize=(9.33, 7));                       
-                        hist_range_com = (compare_df.min()[var], compare_df.max()[var])
-                        plt.hist(compare_df[var] , range=hist_range_com, bins=200, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
-                        hist_range_sam = (samples_df.min()[var], samples_df.max()[var])
-                        plt.hist(samples_df[var], range=hist_range_sam, bins=200, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
-                        if hist_range_sam[0]<hist_range_com[0]:
+                        
+                        globalMin=min(compare_df.min()[var], samples_df.min()[var])
+                        globalMax=max(compare_df.max()[var], samples_df.max()[var])
+                        binSeq=None
+                        if var.find('pt')!=-1:
+                            binwidth=5
+                            binSeq=np.arange(0, globalMax+binwidth, binwidth)
+                        if var.find('phi')!=-1:
+                            binwidth=np.pi*2/300
+                            binSeq=np.arange(-np.pi, np.pi+binwidth, binwidth)
+                        if var.find('eta')!=-1:
+                            binwidth=np.pi*2/300
+                            concatInf = np.flip(-np.arange(binwidth, -globalMin+binwidth, binwidth))
+                            concatSup = np.arange(0, globalMax+binwidth, binwidth)
+                            binSeq=np.concatenate((concatInf, concatSup))                            
+                        if binSeq is None:
+                            raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
+                        plt.figure(figsize=(9.33, 7));
+                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {np.round(compare_mean[var],2)} std: {np.round(compare_std[var],2)}', color='blue', alpha=0.5);
+                        n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
+                        if len(n_compare) != len(n_sample):
+                            raise RuntimeError('Histogram bins are differents, imppossible to calculate MSE')
+                        if var.find('pt')!=-1 and samples_df.min()[var] < 0:
                             font = {'family': 'serif',
                                     'color':  'darkred',
                                     'weight': 'normal',
                                     'size': 10,
                                     }
-                            out_b=round(hist_range_sam[0], 2)
-                            plt.text(0.60, 0.8, "\n".join((f'', f'sample out of lower bound up to {out_b}')), fontdict=font, transform=plt.gca().transAxes)
-                        if hist_range_sam[1]>hist_range_com[1]:
-                            font = {'family': 'serif',
-                                    'color':  'darkred',
-                                    'weight': 'normal',
-                                    'size': 10,
-                                    }
-                            out_b=round(hist_range_sam[1], 2)
-                            plt.text(0.60, 0.85, f'sample out of upper bound up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
+                            out_b=round(samples_df.min()[var], 2)
+                            plt.text(0.60, 0.85, f'Sample contains negative values up to {out_b}', fontdict=font, transform=plt.gca().transAxes)
                        
-                        plt.xlim(hist_range_com)
+                        plt.xlim((binSeq[0], binSeq[-1]))
                         plt.xlabel(var)
                         plt.ylabel(plot_t)
                         plt.yscale(scale_t)
                         plt.legend(loc='upper right')
-                        plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
-                        print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
+                        
+                        RMSE = np.round( np.sqrt( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) ) , 2)
+                        print(f'VARIABLE: {var}')
+                        print(f'Root Mean Square Error (RMSE): {RMSE}')
+                        print(f'Sample mean: {samples_mean[var]} \t {data_t} mean: {compare_mean[var]}')
+                        print(f'Sample variance: {round(samples_std[var]**2,2)} \t {data_t} variance: {round(compare_std[var]**2,2)}')
+                        print(f'Sample skewness: {samples_skew[var]} \t {data_t} skewness: {compare_skew[var]}')
+                        print(f'Sample kurtosis: {samples_kurtosis[var]} \t {data_t} kurtosis: {compare_kurtosis[var]}')
+                        
+                        if 'saveFig' in plot_options:
+                            plt.savefig(f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
+                            print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/comparation_{label}_{var}_{data_t}_{plot_t}_{scale_t}.png')
+            
+                        print('\n')
                         plt.close()
+                    
+        print("Task done successfully!")   
         
-    def postProcess(self, samples_tensor):
-        
-        samples = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
-        
-        phi = np.arctan(samples['pylep1']/samples['pxlep1'])
-        phi = phi*(samples['pxlep1']>0) + phi*(samples['pxlep1']<0) + ((samples['pylep1']>0)-0.5)*2 * (samples['pxlep1']<0)*np.pi
-        pt = np.sqrt(samples['pylep1']**2+samples['pxlep1']**2)
-        eta = np.arcsinh(samples['pzlep1']/pt)
-        
-        return pd.DataFrame({'philep1': phi, 'etalep1': eta, 'ptlep1': pt})
-        
+    def postProcess(self, samples_tensor, var_to_use):
+
+        '''
+        Change from cartesian coordinates to spherical transverse
+        '''
+        samples = pd.DataFrame(data=samples_tensor.numpy(), columns=var_to_use, dtype="float64")
+        newData = None
+        for var in ['lep1']:
+            # meter condicion para no usar la eta del MET, osea no sacar pzMET
+            phi = np.arctan(samples[''.join(('py', var))]/samples[''.join(('px', var))])
+            phi = phi*(samples[''.join(('px', var))]>0) + phi*(samples[''.join(('px', var))]<0) + ((samples[''.join(('py', var))]>0)-0.5)*2 * (samples[''.join(('px', var))]<0)*np.pi
+            pt = np.sqrt(samples[''.join(('py', var))]**2+samples[''.join(('px', var))]**2)
+            if var != 'MET':
+                eta = np.arcsinh(samples[''.join(('pz', var))]/pt) 
+            '''
+            if newData is None:
+                newData=pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt, ''.join(('m', var)): samples[''.join(('m', var))]})
+                continue
+            if newData is not None and var != 'MET':
+                newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt, ''.join(('m', var)): samples[''.join(('m', var))]})), axis=1)
+            if newData is not None and var == 'MET':
+                newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('pt', var)): pt})), axis=1)
+            '''
+            if newData is None:
+                newData=pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt})
+                continue
+            if newData is not None and var != 'MET':
+                newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('eta', var)): eta, ''.join(('pt', var)): pt})), axis=1)
+            if newData is not None and var == 'MET':
+                newData=pd.concat((newData, pd.DataFrame({''.join(('phi', var)): phi, ''.join(('pt', var)): pt})), axis=1)
+        return newData
 
 
 if __name__=="__main__":
 
     from optparse import OptionParser
     parser = OptionParser()
-    
-    parser.add_option("--no-cuda",           dest="cuda", action='store_false', default=True, help="Do not try to use cuda. Otherwise it will try to use cuda only if its available");
+
+    parser.add_option("--no-cuda",           dest="cuda", action='store_false', default=False, help="Do not try to use cuda. Otherwise it will try to use cuda only if its available");
     parser.add_option("--cuda_index",           dest="cuda_index", type="int", default=0, help="Index of the device to use");
     parser.add_option("--experiment",           dest="experiment", type="string", default="TTbar", help="experiment to load models");
     parser.add_option("--model",           dest="model", type="string", default="ttbarGAN_linear", help="Architecture of the generator and critic. It also fixes the latent space distribution");
