@@ -225,35 +225,9 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
             
 def preProcess(data):
     '''
-    Change from spherical transverse coordinates to cartesian 
+    Stay in spherical transverse coordinates
     '''
-    '''
-    newData = None
-    for var in ['lep1']:
-        # meter condicion para no usar la eta del MET, osea no sacar pzMET
-        px = data[''.join(('pt', var))]*np.cos(data[''.join(('phi', var))])
-        py = data[''.join(('pt', var))]*np.sin(data[''.join(('phi', var))])
-        if var != 'MET':
-            pz = data[''.join(('pt', var))]*np.sinh(data[''.join(('eta', var))]) 
-        '''
-        if newData is None:
-            newData=pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz, ''.join(('m', var)): data[''.join(('m', var))]})
-            continue
-        if newData is not None and var != 'MET':
-            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz, ''.join(('m', var)): data[''.join(('m', var))]})), axis=1)
-        if newData is not None and var == 'MET':
-            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py})), axis=1)
-        '''
-        if newData is None:
-            newData=pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz})
-            continue
-        if newData is not None and var != 'MET':
-            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py, ''.join(('pz', var)): pz})), axis=1)
-        if newData is not None and var == 'MET':
-            newData=pd.concat((newData, pd.DataFrame({''.join(('px', var)): px, ''.join(('py', var)): py})), axis=1)
-    
-#     print("Cartesian coord Dataframe shape: ", newData.shape)
-    '''
+
     return pd.DataFrame({'ptlep1': data['ptlep1'].to_numpy()})
     
 
