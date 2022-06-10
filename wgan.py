@@ -534,10 +534,10 @@ class WGAN_trainer:
                         RMSE = np.round( np.sqrt( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) ) , 2)
                         print(f'VARIABLE: {var}')
                         print(f'Root Mean Square Error (RMSE): {RMSE}')
-                        print(f'Sample mean: {samples_mean[var]} \t {data_t} mean: {compare_mean[var]}')
-                        print(f'Sample variance: {round(samples_std[var]**2,2)} \t {data_t} variance: {round(compare_std[var]**2,2)}')
-                        print(f'Sample skewness: {samples_skew[var]} \t {data_t} skewness: {compare_skew[var]}')
-                        print(f'Sample kurtosis: {samples_kurtosis[var]} \t {data_t} kurtosis: {compare_kurtosis[var]}')
+                        print(f'Sample mean: {samples_mean[var]} \t Original mean: {compare_mean[var]}')
+                        print(f'Sample variance: {round(samples_std[var]**2,2)} \t Original variance: {round(compare_std[var]**2,2)}')
+                        print(f'Sample skewness: {samples_skew[var]} \t Original skewness: {compare_skew[var]}')
+                        print(f'Sample kurtosis: {samples_kurtosis[var]} \t Original kurtosis: {compare_kurtosis[var]}')
                         
                         if 'saveFig' in plot_options:
                             plt.savefig(f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
@@ -631,9 +631,8 @@ class WGAN_trainer:
 
 
 if __name__=="__main__":
-
-    from optparse import OptionParser
     print('Welcome back!\nKeep calm and take a cup of coffe while the program is running...\n')
+    from optparse import OptionParser
     parser = OptionParser()
 
     parser.add_option("--no-cuda",           dest="cuda", action='store_false', default=False, help="Do not try to use cuda. Otherwise it will try to use cuda only if its available");
