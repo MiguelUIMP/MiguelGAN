@@ -625,7 +625,7 @@ class WGAN_trainer:
         '''
         samples = pd.DataFrame(data=samples_tensor.numpy(), columns=var_to_use, dtype="float64")
         newData = None
-        for var in ['lep1', 'lep2', 'b1', 'b2']:
+        for var in ['lep1']:
             # meter condicion para no usar la eta del MET, osea no sacar pzMET
             phi = np.arctan(samples[''.join(('py', var))]/samples[''.join(('px', var))])
             phi = phi*(samples[''.join(('px', var))]>0) + phi*(samples[''.join(('px', var))]<0) + ((samples[''.join(('py', var))]>0)-0.5)*2 * (samples[''.join(('px', var))]<0)*np.pi
