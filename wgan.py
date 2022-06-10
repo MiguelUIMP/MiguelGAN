@@ -184,10 +184,11 @@ class WGAN_trainer:
             
         if self.optimizer == 'Adam':
             # Default values for (beta_1, beta2_)=(0.9, 0.999), paper WGAN-GP values (beta_1, beta_2)=(0, 0.9)
-            optim_discriminator = optim.Adam( self.D.parameters(), lr=self.alpha, betas=(0.9, 0.999))  
+            optim_discriminator = optim.Adam( self.D.parameters(), lr=self.alpha, betas=(0, 0.9))  
             optim_generator     = optim.Adam( self.G.parameters(), lr=self.alpha*self.gen_coeff, betas=(0.9, 0.999))
             #scheduler_discriminator = optim.lr_scheduler.MultiStepLR(optim_discriminator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
-            scheduler_generator = optim.lr_scheduler.MultiStepLR(optim_generator, milestones=[int(self.generator_iters/3), int(self.generator_iters*2/3)], gamma=0.1)
+            scheduler_generator =  optim.lr_scheduler.LinearLR(optim_generator, start_factor=1, end_factor=self.alpha_end_factor, total_iters=self.generator_iters)
+            scheduler_discriminator =  optim.lr_scheduler.LinearLR(optim_discriminator, start_factor=1, end_factor=self.alpha_end_factor, total_iters=self.generator_iters)
            
         if self.optimizer == 'SGD':
             optim_discriminator = optim.SGD( self.D.parameters(), lr=self.alpha, momentum=self.momentum)
