@@ -385,7 +385,7 @@ class WGAN_trainer:
         
         
         samples_tensor = torch.squeeze(torch.stack(samples))
-        label = '_'.join((label, "newData"))
+        label = '_'.join((label, "trainedData"))
         self.save_samples(samples_tensor, label, toPytorch=(save_as=='pt' or save_as=='all'), toRoot=(save_as=='root' or save_as=='all'))
         
     
