@@ -442,11 +442,13 @@ class WGAN_trainer:
             raise RuntimeError('Last model saved has not samples generated, generate samples before to plot them.')
             
         # samples tensor load to cpu, it could be load in the gpu    
-        samples_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}.pt', map_location=torch.device('cpu'))
+        samples_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}_trainedData.pt', map_location=torch.device('cpu'))
+        compare_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}_newData.pt', map_location=torch.device('cpu'))
         var_to_use = read_root_files([self.latent_path], pass_df=True)
         # if samples need postProcess to change from cartesian to spherical basis or are already load in spherical ones
         if process:
             samples_df = self.postProcess(samples_tensor, var_to_use)
+            compare_df = self.postProcess(compare_tensor, var_to_use)
         if not process:
             #samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["philep1", "etalep1", "ptlep1"], dtype="float64")
             samples_df = pd.DataFrame(data=samples_tensor.numpy(), columns=["pxlep1", "pylep1", "pzlep1"], dtype="float64")
@@ -549,11 +551,12 @@ class WGAN_trainer:
 
             
         for data_t in data_type:
+            '''
             if data_t == "original_data":
                 compare_df = read_root_files([self.latent_path], compare=True)
             if data_t == "biased_data":
                 compare_df = read_root_files([self.compare_path], compare=True)
-                
+            '''
             compare_mean = compare_df.mean(axis=0).apply(np.round,decimals=2)
             compare_std = compare_df.std(axis=0).apply(np.round,decimals=2)
             compare_skew = compare_df.skew(axis=0).apply(np.round,decimals=2)
@@ -584,8 +587,8 @@ class WGAN_trainer:
                         if binSeq is None:
                             raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
                         plt.figure(figsize=(9.33, 7));
-                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'MC simulation {data_t}; mean: {np.round(compare_mean[var],2)} std: {np.round(compare_std[var],2)}', color='blue', alpha=0.5);
-                        n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Generated samples; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
+                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'New data; mean: {np.round(compare_mean[var],2)} std: {np.round(compare_std[var],2)}', color='blue', alpha=0.5);
+                        n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Trained data; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
                         if len(n_compare) != len(n_sample):
                             raise RuntimeError('Histogram bins are differents, imppossible to calculate MSE')
                         if var.find('pt')!=-1 and samples_df.min()[var] < 0:
