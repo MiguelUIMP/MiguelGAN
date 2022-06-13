@@ -385,7 +385,7 @@ class WGAN_trainer:
         
         
         samples_tensor = torch.squeeze(torch.stack(samples))
-        label = '_'.join((label, "randUnif"))
+        label = '_'.join((label, "randUnif160"))
         self.save_samples(samples_tensor, label, toPytorch=(save_as=='pt' or save_as=='all'), toRoot=(save_as=='root' or save_as=='all'))
         
     
@@ -442,7 +442,7 @@ class WGAN_trainer:
             raise RuntimeError('Last model saved has not samples generated, generate samples before to plot them.')
             
         # samples tensor load to cpu, it could be load in the gpu    
-        samples_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}_randUnif.pt', map_location=torch.device('cpu'))
+        samples_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}_randUnif160.pt', map_location=torch.device('cpu'))
         compare_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}_newData.pt', map_location=torch.device('cpu'))
         var_to_use = read_root_files([self.latent_path], pass_df=True)
         # if samples need postProcess to change from cartesian to spherical basis or are already load in spherical ones
