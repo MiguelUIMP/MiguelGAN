@@ -377,7 +377,7 @@ class WGAN_trainer:
         latent_data = read_root_files([self.latent_path], generate=True) 
         samples=[]
         for _ in range(number_of_samples):
-            z=self.get_torch_variable( torch.cat( (self.generate_latent_space(1), torch.reshape(latent_data[randint(low=0, high=latent_data.shape[0]), :], (-1,1))), dim=1 ) )
+            z=self.get_torch_variable( torch.cat( (self.generate_latent_space(1), torch.reshape(torch.rand(1), (-1,1))), dim=1 ) )
             self.G.eval()
             sample=self.G(z).data.cpu()
             samples.append( sample ) 
@@ -385,7 +385,7 @@ class WGAN_trainer:
         
         
         samples_tensor = torch.squeeze(torch.stack(samples))
-        label = '_'.join((label, "newData"))
+        label = '_'.join((label, "randUnif"))
         self.save_samples(samples_tensor, label, toPytorch=(save_as=='pt' or save_as=='all'), toRoot=(save_as=='root' or save_as=='all'))
         
     
@@ -442,7 +442,7 @@ class WGAN_trainer:
             raise RuntimeError('Last model saved has not samples generated, generate samples before to plot them.')
             
         # samples tensor load to cpu, it could be load in the gpu    
-        samples_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}_trainedData.pt', map_location=torch.device('cpu'))
+        samples_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}_randUnif.pt', map_location=torch.device('cpu'))
         compare_tensor = torch.load(f'./GeneratedSamplesTTbar/samples_{label}_newData.pt', map_location=torch.device('cpu'))
         var_to_use = read_root_files([self.latent_path], pass_df=True)
         # if samples need postProcess to change from cartesian to spherical basis or are already load in spherical ones
@@ -588,7 +588,7 @@ class WGAN_trainer:
                             raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
                         plt.figure(figsize=(9.33, 7));
                         n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'New data; mean: {np.round(compare_mean[var],2)} std: {np.round(compare_std[var],2)}', color='blue', alpha=0.5);
-                        n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Trained data; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
+                        n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Uniform noise ; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
                         if len(n_compare) != len(n_sample):
                             raise RuntimeError('Histogram bins are differents, imppossible to calculate MSE')
                         if var.find('pt')!=-1 and samples_df.min()[var] < 0:
