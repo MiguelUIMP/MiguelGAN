@@ -200,11 +200,11 @@ def read_root_files(paths, fileType=None, generate=False, compare=False, process
         if pass_df:
             return [var for var in processed_data.columns if var.find('nu') == -1 and var.find('m') == -1 and var.find('phi') == -1 and var.find('eta') == -1 and var.find('id') == -1 and var.find('Chi') == -1 and var.find('b') == -1 and var.find('lep2') == -1 and var.find('MET') == -1]
         # MC original dataset and bias dataset are split in 2 disjoint sets each one, it depends on their purpose
-        if fileType=='train' or generate:
+        if fileType=='train':
             # in the reshape (-1,3): -1 stands for the dataset size, keep it, 3 satands for the variables (columns) selected 
             return torch.reshape(torch.tensor(processed_data[:int(round(data.shape[0]/2))].values), (-1,1)) 
 
-        if fileType=='latent':
+        if fileType=='latent' or generate:
             return torch.reshape(torch.tensor(processed_data[int(round(data.shape[0]/2)):].values), (-1,1))
 
         if compare:
