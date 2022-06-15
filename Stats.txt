@@ -6,7 +6,7 @@ Creating plots for model FINAL_103...
 Type of data: biased_data for plot: Counts
 
 VARIABLE: philep1
-Root Mean Square Error (RMSE): 20.24
+Root Mean Square Error (RMSE): 18.54
 Sample mean: -0.01 	 biased_data mean: 0.0
 Sample variance: 3.31 	 biased_data variance: 3.28
 Sample skewness: 0.02 	 biased_data skewness: 0.0
@@ -14,19 +14,19 @@ Sample kurtosis: -1.22 	 biased_data kurtosis: -1.2
 
 
 VARIABLE: etalep1
-Root Mean Square Error (RMSE): 11.9
+Root Mean Square Error (RMSE): 12.28
 Sample mean: 0.02 	 biased_data mean: -0.01
-Sample variance: 2.1 	 biased_data variance: 2.1
-Sample skewness: -0.06 	 biased_data skewness: 0.0
-Sample kurtosis: -0.06 	 biased_data kurtosis: -0.05
+Sample variance: 2.07 	 biased_data variance: 2.1
+Sample skewness: -0.05 	 biased_data skewness: 0.0
+Sample kurtosis: -0.09 	 biased_data kurtosis: -0.05
 
 
 VARIABLE: ptlep1
-Root Mean Square Error (RMSE): 17.77
-Sample mean: 81.2 	 biased_data mean: 81.22
-Sample variance: 3650.58 	 biased_data variance: 3668.72
-Sample skewness: 1.99 	 biased_data skewness: 2.43
-Sample kurtosis: 7.1 	 biased_data kurtosis: 17.02
+Root Mean Square Error (RMSE): 21.78
+Sample mean: 80.83 	 biased_data mean: 81.22
+Sample variance: 3651.78 	 biased_data variance: 3668.72
+Sample skewness: 2.02 	 biased_data skewness: 2.43
+Sample kurtosis: 7.34 	 biased_data kurtosis: 17.02
 
 
 Task done successfully!
