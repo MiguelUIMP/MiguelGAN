@@ -1,0 +1,16 @@
+Welcome back!
+Keep calm and take a cup of coffe while the program is running...
+
+Creating plots for model FINAL_191...
+
+Type of data: biased_data for plot: Counts
+
+VARIABLE: ptlep1
+Root Mean Square Error (RMSE): 29.96
+Sample mean: 60.42 	 biased_data mean: 60.91
+Sample variance: 1936.0 	 biased_data variance: 2062.98
+Sample skewness: 2.13 	 biased_data skewness: 2.43
+Sample kurtosis: 8.84 	 biased_data kurtosis: 17.02
+
+
+Task done successfully!
