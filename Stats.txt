@@ -1,34 +1,32 @@
 Welcome back!
- Keep calm and take a cup of coffe while the program is running...
+Keep calm and take a cup of coffe while the program is running...
+
 Creating plots for model FINAL_106...
 
 Type of data: biased_data for plot: Counts
 
 VARIABLE: philep1
-Root Mean Square Error (RMSE): 20.59
-Sample mean: 0.03 	 biased_data mean: 0.0
-Sample variance: 3.28 	 biased_data variance: 3.28
-Sample skewness: 0.0 	 biased_data skewness: 0.0
+Root Mean Square Error (RMSE): 20.19
+Sample mean: 0.04 	 biased_data mean: 0.0
+Sample variance: 3.24 	 biased_data variance: 3.28
+Sample skewness: -0.0 	 biased_data skewness: 0.0
 Sample kurtosis: -1.2 	 biased_data kurtosis: -1.2
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_106_philep1_biased_data_Counts_linear.png
 
 
 VARIABLE: etalep1
-Root Mean Square Error (RMSE): 11.86
-Sample mean: -0.06 	 biased_data mean: -0.01
-Sample variance: 1.93 	 biased_data variance: 2.1
+Root Mean Square Error (RMSE): 13.1
+Sample mean: -0.04 	 biased_data mean: -0.01
+Sample variance: 2.02 	 biased_data variance: 2.1
 Sample skewness: -0.07 	 biased_data skewness: 0.0
-Sample kurtosis: 0.09 	 biased_data kurtosis: -0.05
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_106_etalep1_biased_data_Counts_linear.png
+Sample kurtosis: 0.02 	 biased_data kurtosis: -0.05
 
 
 VARIABLE: ptlep1
-Root Mean Square Error (RMSE): 18.94
-Sample mean: 82.47 	 biased_data mean: 81.22
-Sample variance: 3621.63 	 biased_data variance: 3877.55
-Sample skewness: 2.0 	 biased_data skewness: 2.75
-Sample kurtosis: 7.0 	 biased_data kurtosis: 25.07
-Plot succesfully created in: ./GeneratedSamplesTTbar/comparation_FINAL_106_ptlep1_biased_data_Counts_linear.png
+Root Mean Square Error (RMSE): 18.99
+Sample mean: 81.46 	 biased_data mean: 81.22
+Sample variance: 3622.84 	 biased_data variance: 3877.55
+Sample skewness: 2.1 	 biased_data skewness: 2.75
+Sample kurtosis: 8.73 	 biased_data kurtosis: 25.07
 
 
 Task done successfully!
