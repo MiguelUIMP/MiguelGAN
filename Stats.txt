@@ -6,11 +6,11 @@ Creating plots for model FINAL_195...
 Type of data: biased_data for plot: Counts
 
 VARIABLE: ptlep1
-Root Mean Square Error (RMSE): 56.4
-Sample mean: 50.46 	 biased_data mean: 50.76
-Sample variance: 1308.27 	 biased_data variance: 1624.09
-Sample skewness: 2.13 	 biased_data skewness: 2.97
-Sample kurtosis: 8.92 	 biased_data kurtosis: 30.03
+Root Mean Square Error (RMSE): 59.24
+Sample mean: 50.51 	 biased_data mean: 50.76
+Sample variance: 1283.79 	 biased_data variance: 1624.09
+Sample skewness: 2.01 	 biased_data skewness: 2.97
+Sample kurtosis: 7.41 	 biased_data kurtosis: 30.03
 
 
 Task done successfully!
