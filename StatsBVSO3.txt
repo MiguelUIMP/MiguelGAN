@@ -1,0 +1,17 @@
+Welcome back!
+Keep calm and take a cup of coffe while the program is running...
+
+Creating plots for model FINAL_198...
+
+Type of data: BiasVSOriginal for plot: Counts
+
+VARIABLE: ptlep1
+Root Mean Square Error (RMSE): 190.66
+Sample mean: 81.22 	 Original mean: 50.76
+Sample variance: 3877.55 	 Original variance: 1432.62
+Sample skewness: 2.75 	 Original skewness: 2.43
+Sample kurtosis: 25.07 	 Original kurtosis: 17.02
+Plot succesfully created in: ./GeneratedSamplesTTbar/BiasVSOriginal_ptlep1_Counts_linear.png
+
+
+Task done successfully!
