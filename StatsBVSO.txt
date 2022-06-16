@@ -1,0 +1,16 @@
+Welcome back!
+Keep calm and take a cup of coffe while the program is running...
+
+Creating plots for model FINAL_195...
+
+Type of data: BiasVSOriginal for plot: Counts
+
+VARIABLE: ptlep1
+Root Mean Square Error (RMSE): 32.5
+Sample mean: 50.76 	 Original mean: 50.76
+Sample variance: 1624.09 	 Original variance: 1432.62
+Sample skewness: 2.97 	 Original skewness: 2.43
+Sample kurtosis: 30.03 	 Original kurtosis: 17.02
+
+
+Task done successfully!
