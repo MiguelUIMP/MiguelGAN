@@ -475,6 +475,7 @@ class WGAN_trainer:
         
         if "BiasVSOriginal" in plot_options:
             #Original unbias data
+            data_t = 'Original'
             compare_df = read_root_files([self.latent_path], compare=True)
             compare_mean = compare_df.mean(axis=0).apply(np.round,decimals=2)
             compare_std = compare_df.std(axis=0).apply(np.round,decimals=2)
