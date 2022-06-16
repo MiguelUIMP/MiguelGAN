@@ -1,0 +1,32 @@
+Welcome back!
+Keep calm and take a cup of coffe while the program is running...
+
+Creating plots for model FINAL_104...
+
+Type of data: BiasVSOriginal for plot: Counts
+
+VARIABLE: philep1
+Root Mean Square Error (RMSE): 0.0
+Sample mean: 0.0 	 Original mean: 0.0
+Sample variance: 3.28 	 Original variance: 3.28
+Sample skewness: 0.0 	 Original skewness: 0.0
+Sample kurtosis: -1.2 	 Original kurtosis: -1.2
+
+
+VARIABLE: etalep1
+Root Mean Square Error (RMSE): 0.0
+Sample mean: -0.01 	 Original mean: -0.01
+Sample variance: 2.1 	 Original variance: 2.1
+Sample skewness: 0.0 	 Original skewness: 0.0
+Sample kurtosis: -0.05 	 Original kurtosis: -0.05
+
+
+VARIABLE: ptlep1
+Root Mean Square Error (RMSE): 106.7
+Sample mean: 60.91 	 Original mean: 50.76
+Sample variance: 2062.98 	 Original variance: 1432.62
+Sample skewness: 2.43 	 Original skewness: 2.43
+Sample kurtosis: 17.02 	 Original kurtosis: 17.02
+
+
+Task done successfully!
