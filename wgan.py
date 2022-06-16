@@ -480,7 +480,12 @@ class WGAN_trainer:
             compare_std = compare_df.std(axis=0).apply(np.round,decimals=2)
             compare_skew = compare_df.skew(axis=0).apply(np.round,decimals=2)
             compare_kurtosis = compare_df.kurtosis(axis=0).apply(np.round,decimals=2)
-         
+            # Generated sample
+            generated_df = samples_df
+            generated_mean = samples_mean
+            generated_std = samples_std            
+            generated_skew = samples_skew 
+            generated_kurtosis = samples_kurtosis        
             #Biased data
             samples_df = read_root_files([self.compare_path], compare=True)
             samples_mean = samples_df.mean(axis=0).apply(np.round,decimals=2)
@@ -513,8 +518,9 @@ class WGAN_trainer:
                         if binSeq is None:
                             raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
                         plt.figure(figsize=(9.33, 7));
-                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Original data; mean: {compare_mean[var]} std: {compare_std[var]}', color='blue', alpha=0.5);
-                        n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Biased data; mean: {samples_mean[var]} std: {samples_std[var]}', color='red', alpha=0.5);
+                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Original data; mean: {compare_mean[var]} std: {compare_std[var]}', color='green', alpha=0.3);
+                        n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Biased data; mean: {samples_mean[var]} std: {samples_std[var]}', color='blue', alpha=0.3);
+                        n_generated,_,_=plt.hist(generated_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Generated data; mean: {generated_mean[var]} std: {generated_std[var]}', color='red', alpha=0.3);
 
                         if var.find('pt')!=-1 and samples_df.min()[var] < 0:
                             font = {'family': 'serif',
