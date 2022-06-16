@@ -518,9 +518,9 @@ class WGAN_trainer:
                         if binSeq is None:
                             raise RuntimeError('Histogram bins have been not assigned, check if there are more than {pt, phi, eta} variables ')
                         plt.figure(figsize=(9.33, 7));
-                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Original data; mean: {compare_mean[var]} std: {compare_std[var]}', color='green', alpha=0.3);
-                        n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Biased data; mean: {samples_mean[var]} std: {samples_std[var]}', color='blue', alpha=0.3);
-                        n_generated,_,_=plt.hist(generated_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Generated data; mean: {generated_mean[var]} std: {generated_std[var]}', color='red', alpha=0.3);
+                        n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Original data; mean: {compare_mean[var]} std: {compare_std[var]}', color='green', alpha=0.5);
+                        n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Biased data; mean: {samples_mean[var]} std: {samples_std[var]}', color='blue', alpha=0.5);
+                        n_generated,_,_=plt.hist(generated_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Generated data; mean: {generated_mean[var]} std: {generated_std[var]}', color='red', alpha=0.5);
 
                         if var.find('pt')!=-1 and samples_df.min()[var] < 0:
                             font = {'family': 'serif',
