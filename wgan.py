@@ -520,7 +520,7 @@ class WGAN_trainer:
                         plt.figure(figsize=(9.33, 7));
                         n_compare,_,_=plt.hist(compare_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Original data; mean: {compare_mean[var]} std: {compare_std[var]}', color='green', alpha=0.5);
                         n_sample,_,_=plt.hist(samples_df[var], bins=binSeq, density=(plot_t=="Density"), label=f'Biased data; mean: {samples_mean[var]} std: {samples_std[var]}', color='blue', alpha=0.5);
-                        n_generated,_,_=plt.hist(generated_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Generated data; mean: {generated_mean[var]} std: {generated_std[var]}', color='red', alpha=0.5);
+                        #n_generated,_,_=plt.hist(generated_df[var] , bins=binSeq, density=(plot_t=="Density"), label=f'Generated data; mean: {generated_mean[var]} std: {generated_std[var]}', color='red', alpha=0.5);
 
                         if var.find('pt')!=-1 and samples_df.min()[var] < 0:
                             font = {'family': 'serif',
@@ -536,7 +536,7 @@ class WGAN_trainer:
                         plt.ylabel(plot_t)
                         plt.yscale(scale_t)
                         plt.legend(loc='upper right')
-                        
+                        ''' 
                         RMSE = np.round( np.sqrt( ((np.array(n_compare)-np.array(n_sample))**2).sum()/len(n_sample) ) , 2)
                         print(f'VARIABLE: {var}')
                         print(f'Root Mean Square Error (RMSE): {RMSE}')
@@ -544,11 +544,11 @@ class WGAN_trainer:
                         print(f'Sample variance: {round(samples_std[var]**2,2)} \t Original variance: {round(compare_std[var]**2,2)}')
                         print(f'Sample skewness: {samples_skew[var]} \t Original skewness: {compare_skew[var]}')
                         print(f'Sample kurtosis: {samples_kurtosis[var]} \t Original kurtosis: {compare_kurtosis[var]}')
-                        
+                        '''
                         if 'saveFig' in plot_options:
-                            plt.savefig(f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
+                            plt.savefig(f'./GeneratedSamplesTTbar/OriginalVSBias_{var}_{plot_t}_{scale_t}.png')
                             print("Plot succesfully created in:", f'./GeneratedSamplesTTbar/BiasVSOriginal_{var}_{plot_t}_{scale_t}.png')
-            
+                        
                         print('\n')
                         plt.close()
             
