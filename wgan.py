@@ -378,8 +378,8 @@ class WGAN_trainer:
         samples=[]
         for _ in range(number_of_samples):
             aux =  torch.reshape(torch.empty(1).normal_(mean=50.76,std=37.85), (-1,1))
-            while aux.item()<=0:
-                aux = torch.reshape(torch.empty(1).normal_(mean=50.76,std=37.85), (-1,1))
+            #while aux.item()<=0:
+                #aux = torch.reshape(torch.empty(1).normal_(mean=50.76,std=37.85), (-1,1))
             z=self.get_torch_variable( torch.cat( (self.generate_latent_space(1), aux), dim=1 ) )
             self.G.eval()
             sample=self.G(z).data.cpu()
